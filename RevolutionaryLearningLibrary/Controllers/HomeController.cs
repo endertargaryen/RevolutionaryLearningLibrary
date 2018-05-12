@@ -10,6 +10,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 	{
 		public ActionResult Index()
 		{
+			ViewBag.Title = "";
 			return View();
 		}
 
