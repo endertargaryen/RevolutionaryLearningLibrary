@@ -1,6 +1,8 @@
-﻿using System;
+﻿using DTOCollection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -8,9 +10,12 @@ namespace RevolutionaryLearningLibrary.Controllers
 {
 	public class HomeController : Controller
 	{
-		public ActionResult Index()
+		public async Task<ActionResult> Index()
 		{
-			ViewBag.Title = "";
+			var users = await (new DataService()).Call<List<UserDTO>>("user");
+
+			ViewBag.Users = users;
+
 			return View();
 		}
 

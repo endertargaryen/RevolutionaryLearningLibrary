@@ -4,12 +4,45 @@ namespace RevolutionaryLearningDataAccess.Models
 	using System.Data.Entity;
 	using System.ComponentModel.DataAnnotations.Schema;
 	using System.Linq;
+	using AutoMapper;
+	using System.Reflection;
+	using System.Collections.Generic;
 
 	public partial class DataAccessContext : DbContext
 	{
+		private static bool _MapperInitialized = false;
+
 		public DataAccessContext()
 			: base("name=DataAccessContext")
 		{
+			// setup maps for all EF objects to DTOs
+			if (!_MapperInitialized)
+			{
+				Mapper.Initialize(cfg =>
+				{
+					cfg.CreateMissingTypeMaps = true;
+
+					var list = AppDomain.CurrentDomain.GetAssemblies()
+						   .SelectMany(t => t.GetTypes())
+						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.Models").ToList();
+
+					foreach (Type type in AppDomain.CurrentDomain.GetAssemblies()
+						   .SelectMany(t => t.GetTypes())
+						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.DTOs" && t.Name != "DTOBase"))
+					{
+						var matchingType = (from n in list
+											where n.Name == type.Name.Replace("DTO", String.Empty)
+											select n).FirstOrDefault();
+
+						if (matchingType != null)
+						{
+							cfg.CreateMap(matchingType, type);
+						}
+					}
+				});
+
+				_MapperInitialized = true;
+			}
 		}
 
 		public virtual DbSet<AgeGroup> AgeGroups { get; set; }
@@ -64,17 +97,6 @@ namespace RevolutionaryLearningDataAccess.Models
 			modelBuilder.Entity<Subject>()
 				.HasMany(e => e.Item2Subject)
 				.WithRequired(e => e.Subject)
-				.WillCascadeOnDelete(false);
-
-			modelBuilder.Entity<User>()
-				.HasMany(e => e.Items)
-				.WithOptional(e => e.User)
-				.HasForeignKey(e => e.AssociatedUserId);
-
-			modelBuilder.Entity<User>()
-				.HasMany(e => e.Locations)
-				.WithRequired(e => e.User)
-				.HasForeignKey(e => e.OwnerUserId)
 				.WillCascadeOnDelete(false);
 		}
 	}

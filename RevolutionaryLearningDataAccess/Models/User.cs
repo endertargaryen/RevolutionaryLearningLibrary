@@ -12,8 +12,6 @@ namespace RevolutionaryLearningDataAccess.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            Items = new HashSet<Item>();
-            Locations = new HashSet<Location>();
         }
 
         public int ID { get; set; }
@@ -34,10 +32,7 @@ namespace RevolutionaryLearningDataAccess.Models
         [StringLength(100)]
         public string Password { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Item> Items { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Location> Locations { get; set; }
+		[Required]
+		public bool IsAdmin { get; set; }
     }
 }

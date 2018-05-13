@@ -1,1 +1,1 @@
-﻿var app = angular.module('rev', []);
+﻿var app = angular.module('rev', ['ngRoute']);
