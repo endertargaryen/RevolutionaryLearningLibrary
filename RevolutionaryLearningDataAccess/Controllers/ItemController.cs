@@ -1,4 +1,5 @@
-﻿using RevolutionaryLearningDataAccess.Models;
+﻿using Newtonsoft.Json;
+using RevolutionaryLearningDataAccess.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,35 @@ namespace RevolutionaryLearningDataAccess.Controllers
 {
     public class ItemController : ApiController
     {
-		public Item Get(int id)
+		public string Get()
 		{
-			Item item = null;
+			string retValue = String.Empty;
 
 			using (var context = new DataAccessContext())
 			{
-				item = (from n in context.Items
-						where n.ID == id
-						select n).FirstOrDefault();
+				var items = (from n in context.Items
+							 select n).ToList();
+
+				retValue = JsonConvert.SerializeObject(items);
 			}
 
-			return item;
+			return retValue;
+		}
+
+		public string Get(int id)
+		{
+			string retValue = String.Empty;
+
+			using (var context = new DataAccessContext())
+			{
+				var item = (from n in context.Items
+							where n.ID == id
+							select n).FirstOrDefault();
+
+				retValue = JsonConvert.SerializeObject(item);
+			}
+
+			return retValue;
 		}
     }
 }
