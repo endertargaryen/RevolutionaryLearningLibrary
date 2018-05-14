@@ -19,16 +19,25 @@
 //			});
 //	}]);
 
-// components
-app.component('showSiteName',
+/*components*/
+
+// site name component
+app.component('siteName',
 {
 	template: '{{$ctrl.name}}',
 	controller: function ()
 	{
 		this.name = "Revolutionary Learning Library";
 	}
-}).component('loginError',
+
+// error component
+}).component('error',
 {
-	template: '<label class="text-danger col-md-offset-2">Invalid Email or Password</label>',
-	controller: 'loginController'
+	bindings:
+	{
+		errorMessage: '<',
+		hasError: '<'
+	},
+	controllerAs: 'model',
+	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>',
 });

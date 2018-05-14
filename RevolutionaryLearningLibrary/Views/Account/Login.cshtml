@@ -5,9 +5,10 @@
 	{
 		// data
 		$scope.title = "Log in";
-		$scope.email = "milly850307@gmail.com";
+		$scope.email = "";
 		$scope.password = "";
-		$scope.loginError = false;
+		$scope.error = false;
+		$scope.errorMessage = "Invalid Email or Password";
 
 		// functions
 		$scope.validateLogin = function (email, password)
@@ -22,11 +23,11 @@
 				{
 					if(data.data.StatusCode == StatusCode.NoContent)
 					{
-						$scope.loginError = true;
+						$scope.error = true;
 					}
 					else
 					{
-						$scope.loginError = false;
+						$scope.error = false;
 
 						if ('@ViewBag.ReturnUrl' != '')
 						{
@@ -60,9 +61,7 @@
 					<label class="col-md-2 control-label">Password</label>
 					<input type="password" class="form-control" ng-model="password" />
 				</div>
-				<div ng-show="loginError">
-					<login-error></login-error>
-				</div>
+				<error ng-attr-error-message="errorMessage" ng-attr-has-error="error"></error>
 				<div class="form-group">
 					<div class="col-md-offset-2 col-md-10">
 						<button ng-click="validateLogin(email, password)" type="button" class="btn btn-default">Log In</button>

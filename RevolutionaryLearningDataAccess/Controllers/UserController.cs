@@ -13,6 +13,8 @@ namespace RevolutionaryLearningDataAccess.Controllers
 {
     public class UserController : ApiController
     {
+		#region GETs
+
 		public UserDTO Get(int id)
 		{
 			UserDTO retValue = null;
@@ -23,13 +25,32 @@ namespace RevolutionaryLearningDataAccess.Controllers
 							where n.ID == id
 							select n).FirstOrDefault();
 
-				retValue = retValue.Convert(user);
+				retValue = retValue.DTOConvert(user);
 			}
 
 			return retValue;
 		}
 
-		[HttpPost]
+		public DTOList<UserDTO> GetUsers()
+		{
+			DTOList<UserDTO> retValue = null;
+
+
+			using (var context = new DataAccessContext())
+			{
+				var list = (from n in context.Users
+							select n).ToList();
+
+				retValue = retValue.Convert<UserDTO>(list);
+			}
+
+			return retValue;
+		}
+
+		#endregion
+
+		#region POSTs
+
 		public UserDTO VerifyUser(LoginDTO user)
 		{
 			UserDTO retValue = null;
@@ -46,28 +67,39 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 				if(verifiedUser != null)
 				{
-					retValue = retValue.Convert<UserDTO>(verifiedUser);
+					retValue = retValue.DTOConvert<UserDTO>(verifiedUser);
 				}
 			}
 
 			return retValue;
 		}
 
-		public DTOList<UserDTO> GetUsers()
+		public ResultDTO ChangePassword(ChangePasswordDTO data)
 		{
-			DTOList<UserDTO> retValue = null;
-			
+			ResultDTO retValue = null;
 
 			using (var context = new DataAccessContext())
 			{
-				var list = (from n in context.Users
-							select n).ToList();
+				User user = (from n in context.Users
+							 where n.Email == data.Email
+							 select n).FirstOrDefault();
 
-				retValue = retValue.Convert<UserDTO>(list);
+				if(user != null)
+				{
+					if(data.CurrentPassword.MD5Encrypt() == user.Password)
+					{
+						user.Password = data.NewPassword.MD5Encrypt();
+
+						context.SaveChanges();
+
+						retValue = new ResultDTO();
+					}
+				}
 			}
 
 			return retValue;
 		}
 
+		#endregion
 	}
 }

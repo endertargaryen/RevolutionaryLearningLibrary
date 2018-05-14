@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using RevolutionaryLearningLibrary.Models;
+using DTOCollection;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -215,8 +216,33 @@ namespace RevolutionaryLearningLibrary.Controllers
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()
         {
-            return View();
+			ViewBag.ChangePassword = "ChangeUserPassword";
+
+			return View();
         }
+
+		[HttpPost]
+		[Authorize]
+		public async Task<ActionResult> ChangeUserPassword(ChangePasswordDTO data)
+		{
+			string email = User.Identity.GetUserId();
+			JsonResult retValue = new JsonResult();
+
+			var result = await UserManager.ChangePasswordAsync(email,
+				data.CurrentPassword, data.NewPassword);
+
+			if(result.Succeeded)
+			{
+				data.Email = email;
+
+				var dsResult = await (new DataService()).Call<ResultDTO>("user",
+					postData: data);
+
+				retValue.Data = dsResult;
+			}
+
+			return retValue;
+		}
 
         //
         // POST: /Manage/ChangePassword

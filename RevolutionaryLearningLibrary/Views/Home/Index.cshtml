@@ -2,24 +2,24 @@
 @{ ViewBag.Title = "Revolutionary Learning Library"; }
 
 <script>
-	app.controller('revController', function ($scope)
+	app.controller('indexController', function ($scope)
 	{
 		$scope.title = "Revolutionary Learning Library";
 		$scope.users = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Users));
 	});
 </script>
 
-<div ng-app="rev" ng-controller="revController">
+<div ng-app="rev" ng-controller="indexController">
 	<div class="jumbotron">
 		
-		<h1><show-site-name></show-site-name></h1>
+		<h1><site-name></site-name></h1>
 	</div>
 
-	<div ng-app="rev" ng-controller="revController" ng-repeat="u in users">
+	@*<div ng-repeat="u in users">
 		<div class="row">
 			<label>Name:</label><span>{{u.FirstName + ' ' + u.LastName}}</span>
 		</div>
-	</div>
+	</div>*@
 
 	<div class="row">
 	</div>

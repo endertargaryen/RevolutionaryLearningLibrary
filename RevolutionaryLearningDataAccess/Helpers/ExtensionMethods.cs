@@ -11,7 +11,7 @@ namespace RevolutionaryLearningDataAccess
 {
 	public static class ExtensionMethods
 	{
-		public static T Convert<T>(this T obj, object convertFrom) where T : DTOBase
+		public static T DTOConvert<T>(this T obj, object convertFrom) where T : DTOBase
 		{
 			IMapper mapper = Mapper.Configuration.CreateMapper();
 

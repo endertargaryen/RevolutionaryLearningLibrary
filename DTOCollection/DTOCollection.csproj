@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangePasswordDTO.cs" />
     <Compile Include="DTOBase.cs" />
     <Compile Include="DTOList.cs" />
     <Compile Include="LoginDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultDTO.cs" />
     <Compile Include="UserDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
