@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using RevolutionaryLearningLibrary.Models;
 using DTOCollection;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -61,6 +62,7 @@ namespace RevolutionaryLearningLibrary.Controllers
         {
             ViewBag.ReturnUrl = returnUrl;
 			ViewBag.LoginUrl = "LoginAngular";
+			ViewBag.RedirectUrl = "/Home/Index";
             return View();
         }
 
@@ -70,6 +72,29 @@ namespace RevolutionaryLearningLibrary.Controllers
 		{
 			UserDTO user = await (new DataService()).Call<UserDTO>("user",
 									postData: login);
+
+			// if a user was found
+			if(user.StatusCodeSuccess && user.StatusCode != (int)HttpStatusCode.NoContent)
+			{
+				var appUser = new ApplicationUser
+				{
+					Email = user.Email,
+					UserName = user.Email,
+					PasswordHash = user.Password,
+					Id = user.Email
+				};
+
+				var exists = UserManager.FindByEmail(user.Email);
+				
+				// create the user
+				if(exists == null)
+				{
+					var createResult = UserManager.Create(appUser, login.Password);
+				}
+
+				var signInResult = SignInManager.PasswordSignIn(login.Email, login.Password, 
+					true, false);
+			}
 
 			return new JsonResult { Data = user };
 		}

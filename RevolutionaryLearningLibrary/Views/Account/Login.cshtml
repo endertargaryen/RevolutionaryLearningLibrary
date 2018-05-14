@@ -5,8 +5,9 @@
 	{
 		// data
 		$scope.title = "Log in";
-		$scope.email = "Email";
-		$scope.password = "Password";
+		$scope.email = "milly850307@gmail.com";
+		$scope.password = "";
+		$scope.loginError = false;
 
 		// functions
 		$scope.validateLogin = function (email, password)
@@ -19,11 +20,27 @@
 			$http.post('@ViewBag.LoginUrl', parameters).
 				then(function success(data)
 				{
-					alert(data.data.StatusCode);
+					if(data.data.StatusCode == StatusCode.NoContent)
+					{
+						$scope.loginError = true;
+					}
+					else
+					{
+						$scope.loginError = false;
+
+						if ('@ViewBag.ReturnUrl' != '')
+						{
+							window.location = '@ViewBag.ReturnUrl';
+						}
+						else
+						{
+							window.location = '@ViewBag.RedirectUrl';
+						}
+					}
 				},
 				function error(data)
 				{
-					alert(data.data.StatusCode);
+					alert(data.data);
 				});
 		};
 
@@ -41,7 +58,10 @@
 				</div>
 				<div class="form-group">
 					<label class="col-md-2 control-label">Password</label>
-					<input type="text" class="form-control" ng-model="password" />
+					<input type="password" class="form-control" ng-model="password" />
+				</div>
+				<div ng-show="loginError">
+					<login-error></login-error>
 				</div>
 				<div class="form-group">
 					<div class="col-md-offset-2 col-md-10">

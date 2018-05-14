@@ -44,7 +44,10 @@ namespace RevolutionaryLearningDataAccess.Models
         [StringLength(50)]
         public string Barcode { get; set; }
 
-        public virtual Category Category { get; set; }
+		[StringLength(100)]
+		public string ImageUrl { get; set; }
+
+		public virtual Category Category { get; set; }
 
         public virtual Location Location { get; set; }
 

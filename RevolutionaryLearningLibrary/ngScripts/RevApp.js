@@ -1,1 +1,1 @@
-﻿var app = angular.module('rev', ['ngRoute']);
+﻿var app = angular.module('rev', ['ngRoute', 'ngMessages']);

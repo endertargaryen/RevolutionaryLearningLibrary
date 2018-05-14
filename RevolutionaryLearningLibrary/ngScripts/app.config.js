@@ -27,4 +27,8 @@ app.component('showSiteName',
 	{
 		this.name = "Revolutionary Learning Library";
 	}
+}).component('loginError',
+{
+	template: '<label class="text-danger col-md-offset-2">Invalid Email or Password</label>',
+	controller: 'loginController'
 });
