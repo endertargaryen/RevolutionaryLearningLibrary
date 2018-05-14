@@ -61,14 +61,14 @@ namespace RevolutionaryLearningLibrary.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-			ViewBag.LoginUrl = "LoginAngular";
+			ViewBag.LoginUrl = "LoginUser";
 			ViewBag.RedirectUrl = "/Home/Index";
             return View();
         }
 
 		[HttpPost]
 		[AllowAnonymous]
-		public async Task<ActionResult> LoginAngular(LoginDTO login)
+		public async Task<ActionResult> LoginUser(LoginDTO login)
 		{
 			UserDTO user = await (new DataService()).Call<UserDTO>("user",
 									postData: login);
@@ -84,15 +84,15 @@ namespace RevolutionaryLearningLibrary.Controllers
 					Id = user.Email
 				};
 
-				var exists = UserManager.FindByEmail(user.Email);
+				var exists = await UserManager.FindByEmailAsync(user.Email);
 				
 				// create the user
 				if(exists == null)
 				{
-					var createResult = UserManager.Create(appUser, login.Password);
+					var createResult = await UserManager.CreateAsync(appUser, login.Password);
 				}
 
-				var signInResult = SignInManager.PasswordSignIn(login.Email, login.Password, 
+				var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password, 
 					true, false);
 			}
 
