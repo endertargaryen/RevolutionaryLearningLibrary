@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Web.Http;
 
 namespace RevolutionaryLearningDataAccess.Controllers
@@ -28,9 +29,33 @@ namespace RevolutionaryLearningDataAccess.Controllers
 			return retValue;
 		}
 
-		public List<UserDTO> GetUsers()
+		[HttpPost]
+		public UserDTO VerifyUser(LoginDTO user)
 		{
-			List<UserDTO> retValue = null;
+			UserDTO retValue = null;
+			string hashedPassword = user.Password.MD5Encrypt();
+
+			using (var context = new DataAccessContext())
+			{
+				User verifiedUser = null;
+
+				verifiedUser = (from n in context.Users
+								where n.Email == user.Email &&
+								n.Password == hashedPassword
+								select n).FirstOrDefault();
+
+				if(verifiedUser != null)
+				{
+					retValue = retValue.Convert<UserDTO>(verifiedUser);
+				}
+			}
+
+			return retValue;
+		}
+
+		public DTOList<UserDTO> GetUsers()
+		{
+			DTOList<UserDTO> retValue = null;
 			
 
 			using (var context = new DataAccessContext())
@@ -43,5 +68,6 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			return retValue;
 		}
-    }
+
+	}
 }

@@ -12,7 +12,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 	{
 		public async Task<ActionResult> Index()
 		{
-			var users = await (new DataService()).Call<List<UserDTO>>("user");
+			var users = await (new DataService()).CallList<UserDTO>("user");
 
 			ViewBag.Users = users;
 

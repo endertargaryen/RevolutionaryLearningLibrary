@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevolutionaryLearningDataAc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOCollection", "DTOCollection\DTOCollection.csproj", "{3B674EB0-3FAF-43ED-A76B-DE8E04A110DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSCodeGenerator", "JSCodeGenerator\JSCodeGenerator.csproj", "{1E34C9B0-CB01-40AA-8CA7-9C1D4F3E4857}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3B674EB0-3FAF-43ED-A76B-DE8E04A110DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B674EB0-3FAF-43ED-A76B-DE8E04A110DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B674EB0-3FAF-43ED-A76B-DE8E04A110DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E34C9B0-CB01-40AA-8CA7-9C1D4F3E4857}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E34C9B0-CB01-40AA-8CA7-9C1D4F3E4857}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E34C9B0-CB01-40AA-8CA7-9C1D4F3E4857}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E34C9B0-CB01-40AA-8CA7-9C1D4F3E4857}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

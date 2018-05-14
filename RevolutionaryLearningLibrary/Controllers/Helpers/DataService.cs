@@ -31,7 +31,7 @@ namespace RevolutionaryLearningLibrary
 			}
 		}
 
-		public T CallSync<T>(string controller, int id = 0, DTOBase postData = null)
+		public T CallSync<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
 			var task = Call<T>(controller, id, postData);
 
@@ -40,7 +40,7 @@ namespace RevolutionaryLearningLibrary
 			return task.Result;
 		}
 
-		public async Task<T> Call<T>(string controller, int id = 0, DTOBase postData = null)
+		public async Task<T> Call<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
 			T retObj = default(T);
 			string path = String.Format(DS_PATH, controller, (id > 0 ? id.ToString() : String.Empty));
@@ -58,6 +58,62 @@ namespace RevolutionaryLearningLibrary
 			if(response.IsSuccessStatusCode)
 			{
 				retObj = await response.Content.ReadAsAsync<T>();
+
+				if (retObj == null)
+				{
+					retObj = new T();
+					retObj.StatusCodeSuccess = true;
+					retObj.StatusCode = (int)System.Net.HttpStatusCode.NoContent;
+				}
+				else
+				{
+					retObj.StatusCode = (int)response.StatusCode;
+					retObj.StatusCodeSuccess = true;
+				}
+			}
+			else
+			{
+				retObj = new T();
+				retObj.StatusCode = (int)response.StatusCode;
+				retObj.StatusCodeSuccess = false;
+			}
+
+			return retObj;
+		}
+
+		public async Task<DTOList<T>> CallList<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		{
+			DTOList<T> retObj = default(DTOList<T>);
+			string path = String.Format(DS_PATH, controller, (id > 0 ? id.ToString() : String.Empty));
+			HttpResponseMessage response;
+
+			if (postData == null)
+			{
+				response = await Client.GetAsync(path);
+			}
+			else
+			{
+				response = await Client.PostAsJsonAsync(path, postData);
+			}
+
+			if (response.IsSuccessStatusCode)
+			{
+				retObj = await response.Content.ReadAsAsync<DTOList<T>>();
+				retObj.StatusCode = (int)response.StatusCode;
+				retObj.StatusCodeSuccess = true;
+
+				foreach (var obj in retObj)
+				{
+					obj.StatusCode = (int)response.StatusCode;
+					obj.StatusCodeSuccess = true;
+				}
+			}
+			else
+			{
+				retObj = new DTOList<T>();
+				
+				retObj.StatusCode = (int)response.StatusCode;
+				retObj.StatusCodeSuccess = false;
 			}
 
 			return retObj;

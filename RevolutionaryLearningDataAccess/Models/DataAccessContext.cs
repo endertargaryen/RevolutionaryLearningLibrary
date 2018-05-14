@@ -21,6 +21,8 @@ namespace RevolutionaryLearningDataAccess.Models
 				Mapper.Initialize(cfg =>
 				{
 					cfg.CreateMissingTypeMaps = true;
+					cfg.ForAllMaps((map, exp) => exp.ForMember("StatusCode", n => n.Ignore()).
+					ForMember("StatusCodeSuccess", n => n.Ignore()));
 
 					var list = AppDomain.CurrentDomain.GetAssemblies()
 						   .SelectMany(t => t.GetTypes())
@@ -28,7 +30,7 @@ namespace RevolutionaryLearningDataAccess.Models
 
 					foreach (Type type in AppDomain.CurrentDomain.GetAssemblies()
 						   .SelectMany(t => t.GetTypes())
-						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.DTOs" && t.Name != "DTOBase"))
+						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.DTOs"))
 					{
 						var matchingType = (from n in list
 											where n.Name == type.Name.Replace("DTO", String.Empty)

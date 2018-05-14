@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using RevolutionaryLearningLibrary.Models;
+using DTOCollection;
+using Newtonsoft.Json;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -58,8 +60,19 @@ namespace RevolutionaryLearningLibrary.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+			ViewBag.LoginUrl = "LoginAngular";
             return View();
         }
+
+		[HttpPost]
+		[AllowAnonymous]
+		public async Task<ActionResult> LoginAngular(LoginDTO login)
+		{
+			UserDTO user = await (new DataService()).Call<UserDTO>("user",
+									postData: login);
+
+			return new JsonResult { Data = user };
+		}
 
         //
         // POST: /Account/Login
