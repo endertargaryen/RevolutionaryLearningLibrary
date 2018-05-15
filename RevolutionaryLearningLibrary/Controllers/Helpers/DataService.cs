@@ -11,7 +11,8 @@ namespace RevolutionaryLearningLibrary
 {
 	public class DataService
 	{
-		private const string DS_PATH = "http://localhost:456/api/{0}/{1}";
+		//private const string DS_PATH = "http://localhost:456/api/{0}/{1}/{2}";
+		private const string DS_PATH = "http://localhost:21515/api/{0}/{1}/{2}";
 
 		private  HttpClient _Client;
 
@@ -31,19 +32,19 @@ namespace RevolutionaryLearningLibrary
 			}
 		}
 
-		public T CallSync<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		public T CallDataServiceSync<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
-			var task = Call<T>(controller, id, postData);
+			var task = CallDataService<T>(controller, action, id, postData);
 
 			task.Wait();
 
 			return task.Result;
 		}
 
-		public async Task<T> Call<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		public async Task<T> CallDataService<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
 			T retObj = default(T);
-			string path = String.Format(DS_PATH, controller, (id > 0 ? id.ToString() : String.Empty));
+			string path = String.Format(DS_PATH, controller, action, (id > 0 ? id.ToString() : String.Empty));
 			HttpResponseMessage response;
 
 			if (postData == null)
@@ -81,10 +82,10 @@ namespace RevolutionaryLearningLibrary
 			return retObj;
 		}
 
-		public async Task<DTOList<T>> CallList<T>(string controller, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		public async Task<DTOList<T>> CallDataServiceList<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
 			DTOList<T> retObj = default(DTOList<T>);
-			string path = String.Format(DS_PATH, controller, (id > 0 ? id.ToString() : String.Empty));
+			string path = String.Format(DS_PATH, controller, action, (id > 0 ? id.ToString() : String.Empty));
 			HttpResponseMessage response;
 
 			if (postData == null)

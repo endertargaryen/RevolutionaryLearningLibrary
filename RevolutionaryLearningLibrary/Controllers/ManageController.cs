@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using RevolutionaryLearningLibrary.Models;
 using DTOCollection;
+using System.Net;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -16,6 +17,7 @@ namespace RevolutionaryLearningLibrary.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+		private DataService _dataService;
 
         public ManageController()
         {
@@ -50,6 +52,19 @@ namespace RevolutionaryLearningLibrary.Controllers
                 _userManager = value;
             }
         }
+
+		public DataService DataService
+		{
+			get
+			{
+				if(_dataService == null)
+				{
+					_dataService = new DataService();
+				}
+
+				return _dataService;
+			}
+		}
 
         //
         // GET: /Manage/Index
@@ -235,12 +250,22 @@ namespace RevolutionaryLearningLibrary.Controllers
 			{
 				data.Email = email;
 
-				var dsResult = await (new DataService()).Call<ResultDTO>("user",
+				var dsResult = await DataService.CallDataService<ResultDTO>("user", "ChangePassword",
 					postData: data);
 
 				retValue.Data = dsResult;
 			}
+			else
+			{
+				ResultDTO retData = new ResultDTO
+				{
+					StatusCode = (int)HttpStatusCode.BadRequest,
+					StatusCodeSuccess = false,
+					StatusMessage = result.Errors.Count() > 0 ? result.Errors.First() : "Error while changing password"
+				};
 
+				retValue.Data = retData;
+			}
 			return retValue;
 		}
 

@@ -41,7 +41,7 @@ namespace RevolutionaryLearningDataAccess.Controllers
 				var list = (from n in context.Users
 							select n).ToList();
 
-				retValue = retValue.Convert<UserDTO>(list);
+				retValue = retValue.DTOConvert<UserDTO>(list);
 			}
 
 			return retValue;
@@ -51,6 +51,7 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 		#region POSTs
 
+		[HttpPost]
 		public UserDTO VerifyUser(LoginDTO user)
 		{
 			UserDTO retValue = null;
@@ -74,6 +75,7 @@ namespace RevolutionaryLearningDataAccess.Controllers
 			return retValue;
 		}
 
+		[HttpPost]
 		public ResultDTO ChangePassword(ChangePasswordDTO data)
 		{
 			ResultDTO retValue = null;

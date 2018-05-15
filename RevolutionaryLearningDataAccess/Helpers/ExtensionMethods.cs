@@ -18,7 +18,7 @@ namespace RevolutionaryLearningDataAccess
 			return mapper.Map<T>(convertFrom);
 		}
 
-		public static DTOList<T> Convert<T>(this DTOList<T> list, object convertFromList) where T : DTOBase
+		public static DTOList<T> DTOConvert<T>(this DTOList<T> list, object convertFromList) where T : DTOBase
 		{
 			IMapper mapper = Mapper.Configuration.CreateMapper();
 

@@ -21,9 +21,10 @@
 			$http.post('@ViewBag.LoginUrl', parameters).
 				then(function success(data)
 				{
-					if(data.data.StatusCode == StatusCode.NoContent)
+					if(data.data.StatusCode !== StatusCode.OK)
 					{
 						$scope.error = true;
+						$scope.errorMessage = "Error From Server: " + data.data.StatusCode.toString();
 					}
 					else
 					{

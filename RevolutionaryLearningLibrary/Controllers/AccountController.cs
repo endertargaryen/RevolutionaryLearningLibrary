@@ -20,6 +20,7 @@ namespace RevolutionaryLearningLibrary.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+		private DataService _dataService;
 
         public AccountController()
         {
@@ -55,6 +56,19 @@ namespace RevolutionaryLearningLibrary.Controllers
             }
         }
 
+		public DataService DataService
+		{
+			get
+			{
+				if(_dataService == null)
+				{
+					_dataService = new DataService();
+				}
+
+				return _dataService;
+			}
+		}
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -70,7 +84,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 		[AllowAnonymous]
 		public async Task<ActionResult> LoginUser(LoginDTO login)
 		{
-			UserDTO user = await (new DataService()).Call<UserDTO>("user",
+			UserDTO user = await DataService.CallDataService<UserDTO>("user", "VerifyUser",
 									postData: login);
 
 			// if a user was found
@@ -94,6 +108,17 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 				var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password, 
 					true, false);
+
+				// SignInManager is out of sync with the data service
+				if(signInResult != SignInStatus.Success)
+				{
+					var changePasswordResult = await UserManager.DeleteAsync(appUser);
+
+					if(changePasswordResult.Succeeded)
+					{
+						var createResult = await UserManager.CreateAsync(appUser, login.Password);
+					}
+				}
 			}
 
 			return new JsonResult { Data = user };
