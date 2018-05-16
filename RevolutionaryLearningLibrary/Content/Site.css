@@ -39,6 +39,12 @@ textarea {
   width: 200px;
 }
 
+.thumbnail
+{
+  max-width: 110px;
+  display: inline-block;
+}
+
 /* Custom styles */
 .form-label
 {
@@ -49,6 +55,21 @@ textarea {
 .item-panel
 {
   margin-right: 10px;
+  cursor: pointer;
+}
+
+.item-description
+{
+  max-width: 150px;
+  text-wrap: normal;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.small-image
+{
+  margin-left: 40px;
+  width: 35px;
 }
 
 /* Direct modifiers */
@@ -60,4 +81,19 @@ textarea {
 .__bold
 {
   font-weight: bold;
+}
+
+.__padding-5
+{
+  padding: 5px;
+}
+
+.__float-right
+{
+  float: right;
+}
+
+.__margin-10
+{
+  margin: 10px;
 }

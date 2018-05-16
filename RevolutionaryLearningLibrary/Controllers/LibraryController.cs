@@ -1,4 +1,5 @@
 ﻿using DTOCollection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,16 @@ namespace RevolutionaryLearningLibrary.Controllers
 		#endregion
 
 		[Authorize]
-		public ActionResult Index()
+		public async Task<ActionResult> Index()
         {
+			var subjects = await DataService.CallDataServiceList<SubjectDTO>("Lookup", "GetSubjects");
+			var ageGroups = await DataService.CallDataServiceList<AgeGroupDTO>("Lookup", "GetAgeGroups");
+			var locations = await DataService.CallDataServiceList<LocationDTO>("Lookup", "GetLocations");
+
+			ViewBag.Subjects = JsonConvert.SerializeObject(subjects);
+			ViewBag.AgeGroups = JsonConvert.SerializeObject(ageGroups);
+			ViewBag.Locations = JsonConvert.SerializeObject(locations);
+
             return View();
         }
 

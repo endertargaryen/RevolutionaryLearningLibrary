@@ -3,7 +3,8 @@
     ViewBag.Title = "Revolutionary Learning Library";
 }
 
-<div ng-app="libraryApp" ng-controller="libraryController" ng-init="init('@ViewBag.Items')">
+<div ng-app="libraryApp" ng-controller="libraryController" 
+	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', '@ViewBag.Locations')">
 	<div class="jumbotron">
 		<site-name class="h2"></site-name>
 	</div>
@@ -17,25 +18,42 @@
 		<section class="panel-body">
 			<div class="form-group">
 				<label for="ddlAgeGroup" class="form-label">Age Group:</label>
-				<select id="ddlAgeGroup" class="dropdown form-control"></select>
-
+				<select id="ddlAgeGroup" class="dropdown form-control"
+						ng-value="filter.AgeGroupId" ng-model="selectedAgeGroup" 
+						ng-options="a.Name for a in ageGroups track by a.ID">
+				</select>
 				<label for="ddlSubject" class="form-label">Subject:</label>
-				<select id="ddlSubject" class="dropdown form-control"></select>
-			
-				<label for="ddlLoation" class="form-label">Location:</label>
-				<select id="ddlLocation" class="dropdown form-control"></select>
+				<select id="ddlSubject" class="dropdown form-control" 
+						ng-value="filter.SubjectId" ng-model="selectedSubject"
+						ng-options="s.Name for s in subjects track by s.ID">
+				</select>
+
+				<label for="ddlLocation" class="form-label">Location:</label>
+				<select id="ddlLocation" class="dropdown form-control"
+					ng-value="filter.LocationId" ng-model="selectedLocation"
+					ng-options="l.Name for l in locations track by l.ID">
+				</select>
 			</div>
 		</section>
 		<section class="panel-footer">
-			<button type="button" class="btn btn-default">Search</button>
+			<button type="button" class="btn btn-primary" ng-click="getItems()">Search</button>
+			<button type="button" class="btn btn-default" ng-click="clearFilter()">Clear</button>
 		</section>
 	</div>
-
+	<div class="col-md-offset-8 col-md-4">
+		<button type="button" class="btn btn-primary __margin-10">Submit Request</button>
+	</div>
 	<div class="__inline-block" ng-repeat="item in items">
 		<div class="panel panel-info item-panel">
 			<section class="panel-heading __bold">{{item.Name}}</section>
-			<section class="panel-body"></section>
-			<section class="panel-footer"></section>
+			<section class="panel-body __padding-5">
+				<img class="thumbnail" ng-src="~/Images/{{item.ImageName}}" />
+				<label angular-dotdotdot class="item-description">{{item.Description}}</label>
+			</section>
+			<section class="panel-footer">
+				<button type="button" class="btn btn-default">Request Checkout</button>
+				<img class="small-image" src="~/Images/checkbox.png" />
+			</section>
 		</div>
 	</div>
 </div>

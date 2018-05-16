@@ -198,6 +198,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\checkbox.png" />
     <Content Include="Images\HelpICantRead.jpg" />
     <Content Include="Images\TheBigLetsLearnMathBook.jpg" />
     <Content Include="ngScripts\app.config.js" />

@@ -30,7 +30,7 @@ namespace DTOCollection
 
 		public string Barcode { get; set; }
 
-		public string ImageUrl { get; set; }
+		public string ImageName { get; set; }
 
 		public CategoryDTO Category { get; set; }
 
