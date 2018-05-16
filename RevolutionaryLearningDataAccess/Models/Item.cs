@@ -55,7 +55,7 @@ namespace RevolutionaryLearningDataAccess.Models
 
         public virtual SubLocation SubLocation { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual User AssociatedUser { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Item2AgeGroup> Item2AgeGroup { get; set; }

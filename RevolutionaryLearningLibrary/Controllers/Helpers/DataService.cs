@@ -41,6 +41,15 @@ namespace RevolutionaryLearningLibrary
 			return task.Result;
 		}
 
+		public DTOList<T> CallDataServiceListSync<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		{
+			var task = CallDataServiceList<T>(controller, action, id, postData);
+
+			task.Wait();
+
+			return task.Result;
+		}
+
 		public async Task<T> CallDataService<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
 		{
 			T retObj = default(T);

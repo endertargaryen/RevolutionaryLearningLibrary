@@ -27,7 +27,7 @@ namespace RevolutionaryLearningDataAccess.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Item> Items { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual User OwnerUser { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SubLocation> SubLocations { get; set; }

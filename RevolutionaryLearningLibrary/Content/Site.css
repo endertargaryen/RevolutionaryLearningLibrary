@@ -22,3 +22,42 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Bootstrap Overrides */
+.form-control
+{
+  display: inline-block;
+}
+
+.label
+{
+  cursor: pointer;
+}
+
+.dropdown
+{
+  width: 200px;
+}
+
+/* Custom styles */
+.form-label
+{
+  width: 80px;
+  margin-left: 5px;
+}
+
+.item-panel
+{
+  margin-right: 10px;
+}
+
+/* Direct modifiers */
+.__inline-block
+{
+  display: inline-block;
+}
+
+.__bold
+{
+  font-weight: bold;
+}

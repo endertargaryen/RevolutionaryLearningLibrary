@@ -40,12 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgeGroupDTO.cs" />
+    <Compile Include="CategoryDTO.cs" />
     <Compile Include="ChangePasswordDTO.cs" />
     <Compile Include="DTOBase.cs" />
     <Compile Include="DTOList.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Item2AgeGroupDTO.cs" />
+    <Compile Include="Item2SubjectDTO.cs" />
+    <Compile Include="ItemDTO.cs" />
+    <Compile Include="ItemFilterDTO.cs" />
+    <Compile Include="LocationDTO.cs" />
     <Compile Include="LoginDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultDTO.cs" />
+    <Compile Include="SubCategoryDTO.cs" />
+    <Compile Include="SubjectDTO.cs" />
+    <Compile Include="SubLocationDTO.cs" />
     <Compile Include="UserDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

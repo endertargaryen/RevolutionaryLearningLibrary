@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Revolutionary Learning Library";
+}
+
+<div ng-app="libraryApp" ng-controller="libraryController" ng-init="init('@ViewBag.Items')">
+	<div class="jumbotron">
+		<site-name class="h2"></site-name>
+	</div>
+	<div class="panel h4">
+		Currently browsing: 
+		<label class="label label-primary">{{categoryText}}</label>
+	</div>
+
+	<div class="panel panel-primary">
+		<section class="panel-heading h4">Search</section>
+		<section class="panel-body">
+			<div class="form-group">
+				<label for="ddlAgeGroup" class="form-label">Age Group:</label>
+				<select id="ddlAgeGroup" class="dropdown form-control"></select>
+
+				<label for="ddlSubject" class="form-label">Subject:</label>
+				<select id="ddlSubject" class="dropdown form-control"></select>
+			
+				<label for="ddlLoation" class="form-label">Location:</label>
+				<select id="ddlLocation" class="dropdown form-control"></select>
+			</div>
+		</section>
+		<section class="panel-footer">
+			<button type="button" class="btn btn-default">Search</button>
+		</section>
+	</div>
+
+	<div class="__inline-block" ng-repeat="item in items">
+		<div class="panel panel-info item-panel">
+			<section class="panel-heading __bold">{{item.Name}}</section>
+			<section class="panel-body"></section>
+			<section class="panel-footer"></section>
+		</div>
+	</div>
+</div>
