@@ -199,9 +199,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\checkbox.png" />
-    <Content Include="Images\HelpICantRead.jpg" />
-    <Content Include="Images\macmillanmcgrawhillmath.png" />
-    <Content Include="Images\TheBigLetsLearnMathBook.jpg" />
+    <Content Include="Images\redx.png" />
     <Content Include="ngScripts\app.config.js" />
     <Content Include="ngScripts\constants.js" />
     <Content Include="ngScripts\helperFunctions.js" />
