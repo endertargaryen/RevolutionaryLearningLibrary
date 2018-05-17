@@ -54,7 +54,6 @@ namespace RevolutionaryLearningDataAccess.Models
 		public virtual DbSet<Item2AgeGroup> Item2AgeGroup { get; set; }
 		public virtual DbSet<Item2Subject> Item2Subject { get; set; }
 		public virtual DbSet<Location> Locations { get; set; }
-		public virtual DbSet<SubCategory> SubCategories { get; set; }
 		public virtual DbSet<Subject> Subjects { get; set; }
 		public virtual DbSet<SubLocation> SubLocations { get; set; }
 		public virtual DbSet<User> Users { get; set; }
@@ -68,11 +67,6 @@ namespace RevolutionaryLearningDataAccess.Models
 
 			modelBuilder.Entity<Category>()
 				.HasMany(e => e.Items)
-				.WithRequired(e => e.Category)
-				.WillCascadeOnDelete(false);
-
-			modelBuilder.Entity<Category>()
-				.HasMany(e => e.SubCategories)
 				.WithRequired(e => e.Category)
 				.WillCascadeOnDelete(false);
 

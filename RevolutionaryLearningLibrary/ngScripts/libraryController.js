@@ -1,32 +1,10 @@
 ﻿angular.module("libraryApp").controller("libraryController", function ($scope, $http)
 {
-	// variables
+	/* 
+	 * variables
+	 */ 
 	$scope.error = false;
 	$scope.errorMessage = "";
-
-	$scope.init = function(subjects, ageGroups, locations)
-	{
-		var blank =
-			{
-				"ID": 0,
-				"Name": "",
-				"StatusCode": 200,
-				"StatusCodeSuccess": true,
-				"StatusMessage": null
-			};
-
-		$scope.subjects = [];
-		//$scope.subjects.push(blank);
-		$scope.subjects = $scope.subjects.concat(JSON.parse(subjects));
-
-		$scope.ageGroups = [];
-		//$scope.ageGroups.push($.extend(blank));
-		$scope.ageGroups = $scope.ageGroups.concat(JSON.parse(ageGroups));
-
-		$scope.locations = [];
-		//$scope.locations.push($.extend(blank));
-		$scope.locations = $scope.locations.concat(JSON.parse(locations));
-	}
 
 	// default filter settings
 	$scope.filter =
@@ -34,17 +12,104 @@
 			"CategoryId": 1,
 			"AgeGroupId": 0,
 			"SubjectId": 0,
-			"LocationId": 0
+			"LocationId": 0,
+			"CategoryId": 1
 		};
 	
-	$scope.categoryText = "Books";
-
 	$scope.selectedAgeGroup = null;
 	$scope.selectedSubject = null;
 	$scope.selectedLocation = null;
+	$scope.selectedCategory = null;
 	$scope.items = [];
+	$scope.selectedItem = null;
+	$scope.isPickingCategory = false;
+	$scope.checkoutItems = [];
 
-	// functions
+	// initialization
+	$scope.init = function (subjects, ageGroups, locations, categories)
+	{
+		$scope.subjects = JSON.parse(subjects);
+		$scope.ageGroups = JSON.parse(ageGroups);
+		$scope.locations = JSON.parse(locations);
+		$scope.categories = JSON.parse(categories);
+
+		$scope.selectedCategory = findItemInArray($scope.categories, "ID", $scope.filter.CategoryId);
+	}
+
+	/*
+	 * functions
+	 */
+	$scope.isItemInCart = function (item)
+	{
+		var existingItem = findItemInArray($scope.checkoutItems, "ID", item.ID);
+
+		return (existingItem !== null);
+	};
+
+	$scope.addItemToCart = function (item)
+	{
+		var existingItem = findItemInArray($scope.checkoutItems, "ID", item.ID);
+
+		if (existingItem === null)
+		{
+			$scope.checkoutItems.push(item);
+		}
+
+		$("#itemModal").modal('hide');
+	};
+
+	$scope.removeItemFromCart = function (item)
+	{
+		$scope.checkoutItems.splice($scope.checkoutItems.indexOf(item), 1);
+	};
+
+	$scope.toggleCategoryDropDownDisplay = function (retrieveData)
+	{
+		$scope.isPickingCategory = !$scope.isPickingCategory;
+
+		if (retrieveData)
+		{
+			$scope.getItems();
+		}
+	};
+
+	$scope.clearFilter = function ()
+	{
+		$scope.selectedAgeGroup = null;
+		$scope.selectedSubject = null;
+		$scope.selectedLocation = null;
+		$scope.isPickingCategory = false;
+
+		// default filter settings
+		$scope.filter =
+			{
+				"CategoryId": 1,
+				"AgeGroupId": 0,
+				"SubjectId": 0,
+				"LocationId": 0
+			};
+
+		$scope.selectedCategory = findItemInArray($scope.categories, "ID", $scope.filter.CategoryId);
+
+		$scope.getItems();
+	};
+
+	$scope.showCartModal = function ()
+	{
+		showModal("cartModal");
+	};
+
+	$scope.showItemModal = function (item)
+	{
+		$scope.selectedItem = item;
+
+		showModal("itemModal");
+	};
+
+	/*
+	 * AJAX
+	 */
+
 	$scope.getItems = function()
 	{
 		if ($scope.selectedSubject !== null)
@@ -62,6 +127,11 @@
 			$scope.filter.LocationId = $scope.selectedLocation.ID;
 		}
 
+		if ($scope.selectedCategory !== null)
+		{
+			$scope.filter.CategoryId = $scope.selectedCategory.ID;
+		}
+
 		$http.post("/Library/GetItems", $scope.filter).
 		then(function success(data)
 		{
@@ -72,25 +142,10 @@
 			alert(data.data);
 		});
 	};
+	 
 
-	$scope.clearFilter = function ()
-	{
-		$scope.selectedAgeGroup = null;
-		$scope.selectedSubject = null;
-		$scope.selectedLocation = null;
-		
-		// default filter settings
-		$scope.filter =
-			{
-				"CategoryId": 1,
-				"AgeGroupId": 0,
-				"SubjectId": 0,
-				"LocationId": 0
-			};
-
-		$scope.getItems();
-	};
-
-	// load initial data
+	/*
+	 * window onload
+	 */
 	$scope.getItems();
 });

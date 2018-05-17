@@ -1,4 +1,6 @@
-﻿namespace DTOCollection
+﻿using System.Collections.Generic;
+
+namespace DTOCollection
 {
 	public class LocationDTO : DTOBase
 	{
@@ -9,5 +11,7 @@
 		public int OwnerUserId { get; set; }
 
 		public UserDTO OwnerUser { get; set; }
+
+		public ICollection<SubLocationDTO> SubLocations { get; set; }
 	}
 }

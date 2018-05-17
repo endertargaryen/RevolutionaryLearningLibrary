@@ -13,7 +13,6 @@ namespace RevolutionaryLearningDataAccess.Models
         public Category()
         {
             Items = new HashSet<Item>();
-            SubCategories = new HashSet<SubCategory>();
         }
 
         public int ID { get; set; }
@@ -24,8 +23,5 @@ namespace RevolutionaryLearningDataAccess.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Item> Items { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SubCategory> SubCategories { get; set; }
     }
 }

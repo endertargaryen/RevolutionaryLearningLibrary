@@ -51,8 +51,6 @@ namespace RevolutionaryLearningDataAccess.Models
 
         public virtual Location Location { get; set; }
 
-        public virtual SubCategory SubCategory { get; set; }
-
         public virtual SubLocation SubLocation { get; set; }
 
         public virtual User AssociatedUser { get; set; }

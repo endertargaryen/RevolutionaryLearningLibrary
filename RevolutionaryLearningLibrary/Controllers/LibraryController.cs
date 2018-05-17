@@ -36,10 +36,12 @@ namespace RevolutionaryLearningLibrary.Controllers
 			var subjects = await DataService.CallDataServiceList<SubjectDTO>("Lookup", "GetSubjects");
 			var ageGroups = await DataService.CallDataServiceList<AgeGroupDTO>("Lookup", "GetAgeGroups");
 			var locations = await DataService.CallDataServiceList<LocationDTO>("Lookup", "GetLocations");
+			var categories = await DataService.CallDataServiceList<CategoryDTO>("Lookup", "GetCategories");
 
 			ViewBag.Subjects = JsonConvert.SerializeObject(subjects);
 			ViewBag.AgeGroups = JsonConvert.SerializeObject(ageGroups);
 			ViewBag.Locations = JsonConvert.SerializeObject(locations);
+			ViewBag.Categories = JsonConvert.SerializeObject(categories);
 
             return View();
         }

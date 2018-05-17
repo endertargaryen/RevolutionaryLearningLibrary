@@ -41,20 +41,26 @@ textarea {
 
 .thumbnail
 {
-  max-width: 110px;
+  max-width: 100px;
   display: inline-block;
+  vertical-align: top;
 }
 
 /* Custom styles */
 .form-label
 {
-  width: 80px;
   margin-left: 5px;
 }
 
 .item-panel
 {
   margin-right: 10px;
+}
+
+.item-panel-body
+{
+  padding: 5px;
+  height: 140px;
   cursor: pointer;
 }
 
@@ -72,10 +78,50 @@ textarea {
   width: 35px;
 }
 
+.med-image
+{
+  max-width: 150px;
+}
+
+.big-image
+{
+  max-width: 250px;
+}
+
+.left-panel
+{
+  display: inline-block;
+  width: 250px;
+}
+
+.right-panel
+{
+  display: inline-block;
+  vertical-align: top;
+  max-width: 300px;
+}
+
+.image-button
+{
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+
 /* Direct modifiers */
 .__inline-block
 {
   display: inline-block;
+}
+
+.__inline-flex
+{
+  display: inline-flex;
+}
+
+.__block
+{
+  display: block;
 }
 
 .__bold
@@ -96,4 +142,19 @@ textarea {
 .__margin-10
 {
   margin: 10px;
+}
+
+.__margin-bottom-10
+{
+  margin-bottom: 10px;
+}
+
+.__margin-left-10
+{
+  margin-left: 10px;
+}
+
+.__width-100
+{
+  width: 100px;
 }

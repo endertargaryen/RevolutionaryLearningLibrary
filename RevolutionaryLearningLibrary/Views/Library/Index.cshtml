@@ -3,36 +3,39 @@
     ViewBag.Title = "Revolutionary Learning Library";
 }
 
-<div ng-app="libraryApp" ng-controller="libraryController" 
-	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', '@ViewBag.Locations')">
+<div ng-app="libraryApp" ng-controller="libraryController"
+	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', '@ViewBag.Locations', '@ViewBag.Categories')">
 	<div class="jumbotron">
 		<site-name class="h2"></site-name>
 	</div>
+	@* Currently Browsing header *@
 	<div class="panel h4">
-		Currently browsing: 
-		<label class="label label-primary">{{categoryText}}</label>
+		Currently browsing:
+		<label class="label label-primary" ng-click="toggleCategoryDropDownDisplay(false)">{{selectedCategory.Name}}</label>
+		<select id="ddlCategory" class="dropdown form-control" ng-show="isPickingCategory"
+				ng-change="toggleCategoryDropDownDisplay(true)"
+				ng-value="filter.CategoryId" ng-model="selectedCategory"
+				ng-options="c.Name for c in categories track by c.ID"></select>
 	</div>
 
+	@* Search Panel *@
 	<div class="panel panel-primary">
 		<section class="panel-heading h4">Search</section>
 		<section class="panel-body">
 			<div class="form-group">
 				<label for="ddlAgeGroup" class="form-label">Age Group:</label>
 				<select id="ddlAgeGroup" class="dropdown form-control"
-						ng-value="filter.AgeGroupId" ng-model="selectedAgeGroup" 
-						ng-options="a.Name for a in ageGroups track by a.ID">
-				</select>
+						ng-value="filter.AgeGroupId" ng-model="selectedAgeGroup"
+						ng-options="a.Name for a in ageGroups track by a.ID"></select>
 				<label for="ddlSubject" class="form-label">Subject:</label>
-				<select id="ddlSubject" class="dropdown form-control" 
+				<select id="ddlSubject" class="dropdown form-control"
 						ng-value="filter.SubjectId" ng-model="selectedSubject"
-						ng-options="s.Name for s in subjects track by s.ID">
-				</select>
+						ng-options="s.Name for s in subjects track by s.ID"></select>
 
 				<label for="ddlLocation" class="form-label">Location:</label>
 				<select id="ddlLocation" class="dropdown form-control"
-					ng-value="filter.LocationId" ng-model="selectedLocation"
-					ng-options="l.Name for l in locations track by l.ID">
-				</select>
+						ng-value="filter.LocationId" ng-model="selectedLocation"
+						ng-options="l.Name for l in locations track by l.ID"></select>
 			</div>
 		</section>
 		<section class="panel-footer">
@@ -40,20 +43,98 @@
 			<button type="button" class="btn btn-default" ng-click="clearFilter()">Clear</button>
 		</section>
 	</div>
-	<div class="col-md-offset-8 col-md-4">
-		<button type="button" class="btn btn-primary __margin-10">Submit Request</button>
+
+	@* Request Buttons *@
+	<div class="col-md-offset-8 col-md-4 __inline-flex __margin-bottom-10">
+		<button type="button" class="btn btn-primary">Submit Request</button>
+		<button type="button" class="btn btn-default __margin-left-10" ng-click="showCartModal()">
+			View Checkout List (<span>{{checkoutItems.length}}</span>)</button>
 	</div>
+
+	@* Item List *@
 	<div class="__inline-block" ng-repeat="item in items">
 		<div class="panel panel-info item-panel">
 			<section class="panel-heading __bold">{{item.Name}}</section>
-			<section class="panel-body __padding-5">
-				<img class="thumbnail" ng-src="~/Images/{{item.ImageName}}" />
-				<label angular-dotdotdot class="item-description">{{item.Description}}</label>
+			<section class="panel-body item-panel-body" ng-click="showItemModal(item)">
+				<img class="thumbnail" ng-src="~/Images/{{item.ImageName}}.jpg" />
+				<label class="item-description">{{item.Description}}</label>
 			</section>
 			<section class="panel-footer">
-				<button type="button" class="btn btn-default">Request Checkout</button>
-				<img class="small-image" src="~/Images/checkbox.png" />
+				<button type="button" ng-click="addItemToCart(item)" class="btn btn-default">Request Checkout</button>
+				<img ng-show="isItemInCart(item)" class="small-image" src="~/Images/checkbox.png" />
 			</section>
 		</div>
 	</div>
-</div>
+
+	@* Full Description Modal *@
+	<div id="itemModal" class="modal fade" role="dialog">
+		<div class="modal-dialog panel panel-primary">
+			<div class="modal-header panel-heading">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{selectedItem.Name}}</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group __inline-block left-panel">
+					<img class="big-image" ng-src="~/Images/{{selectedItem.ImageName}}.jpg" />
+					<div>
+						Description:
+						<label class="form-label">{{selectedItem.Description}}</label>
+					</div>
+				</div>
+				<div class="form-group right-panel">
+					<div class="__margin-10">
+						<span>Location:</span>
+						<label class="form-label">{{selectedItem.Location.Name}}</label>
+					</div>
+					<div class="__margin-10" ng-show="selectedItem.SubLocation !== null">
+						<span>Sub-Location:</span>
+						<label class="form-label">{{selectedItem.SubLocation.Name}}</label>
+					</div>
+					<div class="__margin-10">
+						<span>Age Group(s):</span>
+						<label class="form-label" ng-repeat="ag in selectedItem.Item2AgeGroup">
+							{{ag.AgeGroup.Name}}
+						</label>
+					</div>
+					<div class="__margin-10">
+						<span>Subject(s):</span>
+						<label class="form-label" ng-repeat="s in selectedItem.Item2Subject">
+							{{s.Subject.Name}}
+						</label>
+					</div>
+					<div class="__margin-10">
+						<span>Barcode:</span>
+						<img class="med-image" ng-src="~/Images/{{selectedItem.Barcode}}.jpg" />
+
+					</div>
+				</div>
+				<div class="form-group">
+
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary col-lg-offset-8 col-lg-4"
+						ng-click="addItemToCart(selectedItem)">
+					Request Checkout
+				</button>
+			</div>
+		</div>
+	</div>
+
+
+	@* Cart Modal *@
+	<div id="cartModal" class="modal fade" role="dialog">
+		<div class="modal-dialog panel panel-primary">
+			<div class="modal-header panel-heading">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Items to be requested for checkout</h4>
+			</div>
+			<div class="modal-body">
+				<div ng-repeat="item in checkoutItems">
+					<label>{{item.Name}}</label>
+					<img src="~/Images/redx.png" class="image-button" ng-click="removeItemFromCart(item);" />
+				</div>
+			</div>
+		</div>
+	</div>

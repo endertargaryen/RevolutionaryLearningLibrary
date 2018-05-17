@@ -23,7 +23,8 @@ namespace RevolutionaryLearningLibrary
 				"~/ngScripts/app.config.js",
 				"~/ngScripts/loginController.js",
 				"~/ngScripts/libraryController.js",
-				"~/ngScripts/constants.js"));
+				"~/ngScripts/constants.js",
+				"~/ngScripts/helperFunctions.js"));
 
 			// Use the development version of Modernizr to develop with and learn from. Then, when you're
 			// ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

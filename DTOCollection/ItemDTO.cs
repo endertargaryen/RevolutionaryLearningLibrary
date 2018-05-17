@@ -36,8 +36,6 @@ namespace DTOCollection
 
 		public LocationDTO Location { get; set; }
 
-		public SubCategoryDTO SubCategory { get; set; }
-
 		public SubLocationDTO SubLocation { get; set; }
 
 		public UserDTO AssociatedUser { get; set; }

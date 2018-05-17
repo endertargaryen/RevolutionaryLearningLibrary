@@ -54,7 +54,6 @@
     <Compile Include="LoginDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultDTO.cs" />
-    <Compile Include="SubCategoryDTO.cs" />
     <Compile Include="SubjectDTO.cs" />
     <Compile Include="SubLocationDTO.cs" />
     <Compile Include="UserDTO.cs" />

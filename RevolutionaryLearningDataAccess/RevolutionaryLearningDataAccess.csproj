@@ -152,7 +152,6 @@
     <Compile Include="Models\Item2Subject.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\DataAccessContext.cs" />
-    <Compile Include="Models\SubCategory.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\SubLocation.cs" />
     <Compile Include="Models\User.cs" />
