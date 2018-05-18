@@ -35,7 +35,7 @@
 			ConfirmPassword: confirmPassword
 		});
 
-		$http.post('ChangeUserPassword', parameters).
+		$http.post('/Manage/ChangeUserPassword', parameters).
 			then(function success(data)
 			{
 				if (data.data.StatusCode !== StatusCode.OK)
@@ -46,13 +46,13 @@
 				else
 				{
 					$scope.error = false;
-					window.location = "/Home/Index";
+					window.location = "/Library/Index";
 				}
 			},
 			function error(data)
 			{
 				$scope.error = true;
-				$scope.errorMessage = "Server error.  Contact the admin to change your password";
+				$scope.errorMessage = "Server error: " + data.data.StatusMessage + " Contact the admin to change your password";
 				alert(data.data);
 			});
 	};

@@ -134,6 +134,16 @@ namespace RevolutionaryLearningLibrary.Controllers
 				if (signInResult != SignInStatus.Success)
 				{
 					var updateResult = await UserManager.UpdateAsync(appUser);
+
+					var signInResult2 = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
+					true, false);
+
+					if(signInResult2 != SignInStatus.Success)
+					{
+						user.StatusCodeSuccess = false;
+						user.StatusCode = (int)HttpStatusCode.InternalServerError;
+						user.StatusMessage = "Problem signing in.  Please try again later";
+					}
 				}
 			}
 

@@ -60,35 +60,42 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		[HttpPost]
 		[Authorize]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangeUserPassword(ChangePasswordDTO data)
 		{
-			string email = User.Identity.GetUserId();
+			string email = User.Identity.GetUserName();
 			JsonResult retValue = new JsonResult();
 
-			var result = await UserManager.ChangePasswordAsync(email,
-				data.CurrentPassword, data.NewPassword);
-
-			if (result.Succeeded)
+			try
 			{
-				data.Email = email;
+				var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(),
+					data.CurrentPassword, data.NewPassword);
 
-				var dsResult = await DataService.CallDataService<ResultDTO>("user", "ChangePassword",
-					postData: data);
-
-				retValue.Data = dsResult;
-			}
-			else
-			{
-				ResultDTO retData = new ResultDTO
+				if (result.Succeeded)
 				{
-					StatusCode = (int)HttpStatusCode.BadRequest,
-					StatusCodeSuccess = false,
-					StatusMessage = result.Errors.Count() > 0 ? result.Errors.First() : "Error while changing password"
-				};
+					data.Email = email;
 
-				retValue.Data = retData;
+					var dsResult = await DataService.CallDataService<ResultDTO>("user", "ChangePassword",
+						postData: data);
+
+					retValue.Data = dsResult;
+				}
+				else
+				{
+					ResultDTO retData = new ResultDTO
+					{
+						StatusCode = (int)HttpStatusCode.BadRequest,
+						StatusCodeSuccess = false,
+						StatusMessage = result.Errors.Count() > 0 ? result.Errors.First() : "Error while changing password"
+					};
+
+					retValue.Data = retData;
+				}
 			}
+			catch(Exception ex)
+			{
+
+			}
+
 			return retValue;
 		}
 

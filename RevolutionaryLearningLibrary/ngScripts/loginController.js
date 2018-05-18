@@ -28,7 +28,7 @@
 				if (data.data.StatusCode !== StatusCode.OK)
 				{
 					$scope.error = true;
-					$scope.errorMessage = "Error From Server: " + data.data.StatusCode.toString();
+					$scope.errorMessage = data.data.StatusMessage;
 				}
 				else
 				{
