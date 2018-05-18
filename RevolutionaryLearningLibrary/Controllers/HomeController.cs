@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -19,6 +20,14 @@ namespace RevolutionaryLearningLibrary.Controllers
 		private DataService _dataService;
 		private ApplicationSignInManager _signInManager;
 		private ApplicationUserManager _userManager;
+
+		private IAuthenticationManager AuthenticationManager
+		{
+			get
+			{
+				return HttpContext.GetOwinContext().Authentication;
+			}
+		}
 
 		public ApplicationSignInManager SignInManager
 		{
@@ -78,6 +87,14 @@ namespace RevolutionaryLearningLibrary.Controllers
 		#endregion
 
 		#region Async Methods
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult LogOff()
+		{
+			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+			return RedirectToAction("Index", "Home");
+		}
 
 		[HttpPost]
 		[AllowAnonymous]

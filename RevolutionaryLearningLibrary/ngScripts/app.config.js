@@ -46,3 +46,14 @@ angular.module('libraryApp', []).component('siteName',
 	controllerAs: 'model',
 	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>'
 });
+
+angular.module('passwordApp', []).component('error',
+{
+	bindings:
+	{
+		errorMessage: '<',
+		hasError: '<'
+	},
+	controllerAs: 'model',
+	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>'
+});

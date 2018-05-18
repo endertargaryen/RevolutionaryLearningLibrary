@@ -23,6 +23,7 @@ namespace RevolutionaryLearningLibrary
 				"~/ngScripts/app.config.js",
 				"~/ngScripts/loginController.js",
 				"~/ngScripts/libraryController.js",
+				"~/ngScripts/passwordController.js",
 				"~/ngScripts/constants.js",
 				"~/ngScripts/helperFunctions.js"));
 

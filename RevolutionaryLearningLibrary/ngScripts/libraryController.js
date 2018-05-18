@@ -107,7 +107,7 @@
 	};
 
 	/*
-	 * AJAX
+	 * Server Functions
 	 */
 
 	$scope.getItems = function()
