@@ -46,7 +46,7 @@
 
 	@* Request Buttons *@
 	<div class="col-md-offset-8 col-md-4 __inline-flex __margin-bottom-10">
-		<button type="button" class="btn btn-primary">Submit Request</button>
+		<button type="button" class="btn btn-primary" ng-click="submitRequestList()">Submit Request</button>
 		<button type="button" class="btn btn-default __margin-left-10" ng-click="showCartModal()">
 			View Checkout List (<span>{{checkoutItems.length}}</span>)</button>
 	</div>
@@ -65,7 +65,9 @@
 			</section>
 		</div>
 	</div>
-
+	<div>
+		<span>{{errorMessage}}</span>
+	</div>
 	@* Full Description Modal *@
 	<div id="itemModal" class="modal fade" role="dialog">
 		<div class="modal-dialog panel panel-primary">

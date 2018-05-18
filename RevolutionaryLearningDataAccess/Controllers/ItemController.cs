@@ -1,6 +1,8 @@
 ﻿using DTOCollection;
 using RevolutionaryLearningDataAccess.Models;
+using System;
 using System.Linq;
+using System.Net;
 using System.Web.Http;
 
 namespace RevolutionaryLearningDataAccess.Controllers
@@ -30,7 +32,8 @@ namespace RevolutionaryLearningDataAccess.Controllers
 			using (var context = new DataAccessContext())
 			{
 				var items = (from n in context.Items
-							 where n.CategoryId == filter.CategoryId
+							 where n.CategoryId == filter.CategoryId &&
+							 n.AssociatedUserId == null // no one has it checked out or requested
 							 select n).ToList();
 
 				if(filter.AgeGroupId > 0)
@@ -60,9 +63,52 @@ namespace RevolutionaryLearningDataAccess.Controllers
 			return retValue;
 		}
 
+		[HttpPost]
+		public ResultDTO RequestItems(DTOList<ItemDTO> dtoItems)
+		{
+			ResultDTO result = null;
+
+			try
+			{
+				using (var context = new DataAccessContext())
+				{
+					var idList = dtoItems.Select(n => n.ID);
+
+					var items = (from n in context.Items
+								 where idList.Contains(n.ID)
+								 select n).ToList();
+
+					items.ForEach(item =>
+					{
+						item.AssociatedUserId = dtoItems.Where(dto => dto.ID == item.ID).First().AssociatedUserId;
+						item.RequestDate = DateTime.Now;
+					});
+
+					context.SaveChanges();
+
+					result = new ResultDTO
+					{
+						StatusCode = (int)HttpStatusCode.OK,
+						StatusCodeSuccess = true
+					};
+				}
+			}
+			catch (Exception ex)
+			{
+				result = new ResultDTO
+				{
+					StatusCode = (int)HttpStatusCode.InternalServerError,
+					StatusCodeSuccess = false,
+					StatusMessage = ex.ToString()
+				};
+			}
+
+			return result;
+		}
+
 		public ItemDTO Get(int id)
 		{
-			ItemDTO retValue = null; ;
+			ItemDTO retValue = null;
 
 			using (var context = new DataAccessContext())
 			{

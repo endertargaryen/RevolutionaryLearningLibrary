@@ -1,4 +1,6 @@
 ﻿using DTOCollection;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,19 @@ namespace RevolutionaryLearningLibrary.Controllers
 		#region Fields & Properties
 
 		private DataService _dataService;
+		private ApplicationUserManager _userManager;
+
+		public ApplicationUserManager UserManager
+		{
+			get
+			{
+				return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+			}
+			private set
+			{
+				_userManager = value;
+			}
+		}
 
 		public DataService DataService
 		{
@@ -48,10 +63,41 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		public async Task<ActionResult> GetItems(ItemFilterDTO filter)
 		{
-			var items = await DataService.CallDataServiceList<ItemDTO>("Item", "GetItems",
-				postData: filter);
+			var items = await DataService.CallDataServiceList<ItemDTO>("Item", "GetItems", filter);
 
 			return new JsonResult { Data = items };
 		}
-    }
+
+		[Authorize]
+		public async Task<ActionResult> SubmitRequestList(DTOList<ItemDTO> items)
+		{
+			string identityUserId = User.Identity.GetUserId();
+
+			int userId = Convert.ToInt32(identityUserId);
+
+			items.ForEach(n =>
+			{
+				n.AssociatedUserId = userId;
+			});
+
+			ResultDTO result = null;
+
+			try
+			{
+				result = await DataService.CallDataService<ResultDTO>("Item", "RequestItems", items);
+
+				if (result.StatusCodeSuccess)
+				{
+					result.StatusMessage = "Your requests have been submitted to the admin.  Thank you!";
+				}
+			}
+			catch(Exception ex)
+			{
+				DataService.SendEmail(ex.Message, ex.InnerException.ToString(), isError: true);
+			}
+
+			return new JsonResult { Data = result };
+		}
+
+	}
 }

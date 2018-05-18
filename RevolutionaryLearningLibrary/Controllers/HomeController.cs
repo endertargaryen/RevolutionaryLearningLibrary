@@ -94,29 +94,29 @@ namespace RevolutionaryLearningLibrary.Controllers
 					Email = user.Email,
 					UserName = user.Email,
 					PasswordHash = user.Password,
-					Id = user.Email
+					Id = user.ID.ToString()
 				};
 
 				var exists = await UserManager.FindByEmailAsync(user.Email);
 
-				// create the user
+				// exists in the DB, but not the local UserManager, create the user
 				if (exists == null)
 				{
 					var createResult = await UserManager.CreateAsync(appUser, login.Password);
+				}
+				else
+				{
+					// otherwise set the appUser to the one found in the manager
+					appUser = exists;
 				}
 
 				var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
 					true, false);
 
-				// SignInManager is out of sync with the data service
+				// SignInManager is out of sync with the data service, update the manager
 				if (signInResult != SignInStatus.Success)
 				{
-					var deleteResult = await UserManager.DeleteAsync(appUser);
-
-					if (deleteResult.Succeeded)
-					{
-						var createResult = await UserManager.CreateAsync(appUser, login.Password);
-					}
+					var updateResult = await UserManager.UpdateAsync(appUser);
 				}
 			}
 

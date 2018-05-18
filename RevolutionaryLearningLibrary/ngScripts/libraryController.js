@@ -4,7 +4,7 @@
 	 * variables
 	 */ 
 	$scope.error = false;
-	$scope.errorMessage = "";
+	$scope.errorMessage = null;
 
 	// default filter settings
 	$scope.filter =
@@ -139,10 +139,26 @@
 		},
 		function error(data)
 		{
-			alert(data.data);
+			$scope.errorMessage = data.data;
 		});
 	};
-	 
+	
+	$scope.submitRequestList = function ()
+	{
+		if ($scope.checkoutItems.length > 0)
+		{
+			$http.post("/Library/SubmitRequestList", $scope.checkoutItems).
+			then(function success(data)
+			{
+				alert(data.data.StatusMessage);
+				window.location = "/Library/Index";
+			},
+			function error(data)
+			{
+				$scope.errorMessage = data;
+			});
+		}
+	};
 
 	/*
 	 * window onload

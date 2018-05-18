@@ -1,9 +1,12 @@
 ﻿using DTOCollection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -11,8 +14,7 @@ namespace RevolutionaryLearningLibrary
 {
 	public class DataService
 	{
-		private const string DS_PATH = "http://localhost:456/api/{0}/{1}/{2}";
-		//private const string DS_PATH = "http://localhost:21515/api/{0}/{1}/{2}";
+		private const string DS_PATH = "http://localhost:456/api/{0}/{1}";
 
 		private  HttpClient _Client;
 
@@ -32,28 +34,10 @@ namespace RevolutionaryLearningLibrary
 			}
 		}
 
-		public T CallDataServiceSync<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
-		{
-			var task = CallDataService<T>(controller, action, id, postData);
-
-			task.Wait();
-
-			return task.Result;
-		}
-
-		public DTOList<T> CallDataServiceListSync<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
-		{
-			var task = CallDataServiceList<T>(controller, action, id, postData);
-
-			task.Wait();
-
-			return task.Result;
-		}
-
-		public async Task<T> CallDataService<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		public async Task<T> CallDataService<T>(string controller, string action, object postData = null) where T : DTOBase, new()
 		{
 			T retObj = default(T);
-			string path = String.Format(DS_PATH, controller, action, (id > 0 ? id.ToString() : String.Empty));
+			string path = String.Format(DS_PATH, controller, action);
 			HttpResponseMessage response;
 
 			if (postData == null)
@@ -88,13 +72,16 @@ namespace RevolutionaryLearningLibrary
 				retObj.StatusCodeSuccess = false;
 			}
 
+			Debug.WriteLine(JsonConvert.SerializeObject(postData));
+			Debug.WriteLine(JsonConvert.SerializeObject(retObj));
+
 			return retObj;
 		}
 
-		public async Task<DTOList<T>> CallDataServiceList<T>(string controller, string action, int id = 0, DTOBase postData = null) where T : DTOBase, new()
+		public async Task<DTOList<T>> CallDataServiceList<T>(string controller, string action, object postData = null) where T : DTOBase, new()
 		{
 			DTOList<T> retObj = default(DTOList<T>);
-			string path = String.Format(DS_PATH, controller, action, (id > 0 ? id.ToString() : String.Empty));
+			string path = String.Format(DS_PATH, controller, action);
 			HttpResponseMessage response;
 
 			if (postData == null)
@@ -103,6 +90,11 @@ namespace RevolutionaryLearningLibrary
 			}
 			else
 			{
+				if(!(postData is DTOBase) && !(postData is IDtoList))
+				{
+					throw new Exception("Have to pass in a DTOList<T> or DTOBase for the postData parameter");
+				}
+
 				response = await Client.PostAsJsonAsync(path, postData);
 			}
 
@@ -126,7 +118,24 @@ namespace RevolutionaryLearningLibrary
 				retObj.StatusCodeSuccess = false;
 			}
 
+			Debug.WriteLine(JsonConvert.SerializeObject(postData));
+			Debug.WriteLine(JsonConvert.SerializeObject(retObj));
+
 			return retObj;
+		}
+
+		public void SendEmail(string subject, string body, bool isError = false, string recipient = null)
+		{
+			MailMessage mail = new MailMessage("messages@revolutionarylearning.org", 
+				(isError ? "endersshadow20@gmail.com" : recipient));
+			SmtpClient client = new SmtpClient();
+			client.Port = 25;
+			client.DeliveryMethod = SmtpDeliveryMethod.Network;
+			client.UseDefaultCredentials = false;
+			client.Host = "smtp.gmail.com";
+			mail.Subject = subject;
+			mail.Body = body;
+			client.Send(mail);
 		}
 	}
 }

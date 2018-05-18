@@ -41,7 +41,7 @@ namespace RevolutionaryLearningDataAccess.Controllers
 				var list = (from n in context.Users
 							select n).ToList();
 
-				retValue = retValue.DTOConvert<UserDTO>(list);
+				retValue = retValue.DTOConvert(list);
 			}
 
 			return retValue;
@@ -68,7 +68,7 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 				if(verifiedUser != null)
 				{
-					retValue = retValue.DTOConvert<UserDTO>(verifiedUser);
+					retValue = retValue.DTOConvert(verifiedUser);
 				}
 			}
 
