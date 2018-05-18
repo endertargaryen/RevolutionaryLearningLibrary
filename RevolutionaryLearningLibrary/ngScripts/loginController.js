@@ -17,10 +17,11 @@
 	// functions
 	$scope.validateLogin = function (email, password)
 	{
-		var parameters = JSON.stringify({
+		var parameters = 
+		{
 			Email: email,
 			Password: password
-		});
+		};
 
 		$http.post($scope.loginUrl, parameters).
 			then(function success(data)
@@ -46,7 +47,8 @@
 			},
 			function error(data)
 			{
-				alert(data.data);
+				$scope.error = true;
+				$scope.errorMessage = data.data;
 			});
 	};
 

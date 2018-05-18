@@ -103,47 +103,54 @@ namespace RevolutionaryLearningLibrary.Controllers
 			UserDTO user = await DataService.CallDataService<UserDTO>("user", "VerifyUser",
 									postData: login);
 
-			// if a user was found
-			if (user.StatusCodeSuccess && user.StatusCode != (int)HttpStatusCode.NoContent)
+			if (user.StatusCodeSuccess && user.StatusCode == (int)HttpStatusCode.NoContent)
 			{
-				var appUser = new ApplicationUser
+				user.StatusMessage = "Invalid username or password";
+
+				return new JsonResult { Data = user };
+			}
+			else
+			{
+				user.StatusMessage = $"Internal Server Error - error code: {(HttpStatusCode)user.StatusCode}";
+			}
+
+			var appUser = new ApplicationUser
+			{
+				Email = user.Email,
+				UserName = user.Email,
+				PasswordHash = user.Password,
+				Id = user.ID.ToString()
+			};
+
+			var exists = await UserManager.FindByEmailAsync(user.Email);
+
+			// exists in the DB, but not the local UserManager, create the user
+			if (exists == null)
+			{
+				var createResult = await UserManager.CreateAsync(appUser, login.Password);
+			}
+			else
+			{
+				// otherwise set the appUser to the one found in the manager
+				appUser = exists;
+			}
+
+			var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
+				true, false);
+
+			// SignInManager is out of sync with the data service, update the manager
+			if (signInResult != SignInStatus.Success)
+			{
+				var updateResult = await UserManager.UpdateAsync(appUser);
+
+				var signInResult2 = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
+				true, false);
+
+				if(signInResult2 != SignInStatus.Success)
 				{
-					Email = user.Email,
-					UserName = user.Email,
-					PasswordHash = user.Password,
-					Id = user.ID.ToString()
-				};
-
-				var exists = await UserManager.FindByEmailAsync(user.Email);
-
-				// exists in the DB, but not the local UserManager, create the user
-				if (exists == null)
-				{
-					var createResult = await UserManager.CreateAsync(appUser, login.Password);
-				}
-				else
-				{
-					// otherwise set the appUser to the one found in the manager
-					appUser = exists;
-				}
-
-				var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
-					true, false);
-
-				// SignInManager is out of sync with the data service, update the manager
-				if (signInResult != SignInStatus.Success)
-				{
-					var updateResult = await UserManager.UpdateAsync(appUser);
-
-					var signInResult2 = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
-					true, false);
-
-					if(signInResult2 != SignInStatus.Success)
-					{
-						user.StatusCodeSuccess = false;
-						user.StatusCode = (int)HttpStatusCode.InternalServerError;
-						user.StatusMessage = "Problem signing in.  Please try again later";
-					}
+					user.StatusCodeSuccess = false;
+					user.StatusCode = (int)HttpStatusCode.InternalServerError;
+					user.StatusMessage = "Problem signing in.  Please try again later";
 				}
 			}
 
