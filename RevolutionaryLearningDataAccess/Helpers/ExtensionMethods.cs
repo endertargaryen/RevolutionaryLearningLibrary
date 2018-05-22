@@ -6,6 +6,8 @@ using AutoMapper;
 using DTOCollection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Reflection;
+using System.Collections;
 
 namespace RevolutionaryLearningDataAccess
 {
@@ -23,6 +25,60 @@ namespace RevolutionaryLearningDataAccess
 			IMapper mapper = Mapper.Configuration.CreateMapper();
 
 			return mapper.Map<DTOList<T>>(convertFromList);
+		}
+
+		public static T DTOConvertNonRecursive<T>(this T obj, object convertFrom) where T : DTOBase, new()
+		{
+			if(obj == null)
+			{
+				obj = new T();
+			}
+
+			PropertyInfo[] toProperties = obj.GetType().GetProperties();
+
+			foreach (var fromProp in convertFrom.GetType().GetProperties())
+			{
+				var toProp = (from n in toProperties
+							  where n.Name == fromProp.Name
+							  select n).FirstOrDefault();
+
+				if(toProp != null && toProp.PropertyType.GetInterface("IEnumerable") == null)
+				{
+					if (toProp.PropertyType.IsClass)
+					{
+						if(toProp.PropertyType == typeof(string) ||
+							toProp.PropertyType == typeof(Nullable))
+						{
+							toProp.SetValue(obj, fromProp.GetValue(convertFrom));
+						}
+					}
+					else
+					{
+						toProp.SetValue(obj, fromProp.GetValue(convertFrom));
+					}
+				}
+			}
+
+			return obj;
+		}
+
+		public static DTOList<T> DTOConvertNonRecursive<T>(this DTOList<T> list, object convertFrom) where T : DTOBase, new()
+		{
+			if (list == null)
+			{
+				list = new DTOList<T>();
+			}
+
+			foreach(var fromObj in ((IList)convertFrom))
+			{
+				T toObj = new T();
+
+				toObj = toObj.DTOConvertNonRecursive<T>(fromObj);
+
+				list.Add(toObj);
+			}
+
+			return list;
 		}
 
 		public static string MD5Encrypt(this string value)

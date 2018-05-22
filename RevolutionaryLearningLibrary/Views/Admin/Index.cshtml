@@ -4,7 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div ng-app="adminApp" ng-controller="adminController">
+<div ng-app="adminApp" ng-controller="adminController"
+	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', '@ViewBag.Locations', '@ViewBag.Categories')">
 	<h2>Manage Library</h2>
 	<div class="navbar navbar-normal">
 		<div class="container">
@@ -54,9 +55,54 @@
 		</table>
 	</div>
 	<div ng-show="curTab === adminTab.addInventory">
-		<div>
 
+		@*use MVC here for uploading a file (although this is still triggered via Angular controller)*@
+		@using (Html.BeginForm("UploadImage", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id="fileSubmitForm"}))
+		{
+		<div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">Name</label>
+				<input type="text" class="form-control" ng-model="item.Name" />
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">Description</label>
+				<textarea type="text" class="form-control" ng-model="item.Description"></textarea>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">Image</label>
+				<input fd-input type="file" name="httpFilePost" id="httpFilePost" accept="image/*"/>
+			</div>
+			<div class="form-group">
+				<label for="ddlLocation" class="form-label">Location:</label>
+				<select id="ddlLocation" class="dropdown form-control"
+						ng-value="filter.LocationId" ng-model="selectedLocation"
+						ng-options="l.Name for l in locations track by l.ID"></select>
+			</div>
+			<div class="form-group" ng-repeat="n in selectedAgeGroups track by $index">
+				<label for="ddlAgeGroup" class="form-label">Age Group {{$index + 1}}:</label>
+				<select id="ddlAgeGroup" class="dropdown form-control"
+					ng-value="filter.AgeGroupId" ng-model="n"
+					ng-options="a.Name for a in ageGroups track by a.ID"></select>
+			</div>
+			<div class="form-group" ng-repeat="n in [1, 2]">
+				<label for="ddlSubject" class="form-label">Subject {{n}}:</label>
+				<select id="ddlSubject" class="dropdown form-control"
+						ng-value="filter.SubjectId" ng-model="selectedSubject"
+						ng-options="s.Name for s in subjects track by s.ID"></select>
+			</div>
+			<div class="form-group">
+				<label for="ddlLocation" class="form-label">Location:</label>
+				<select id="ddlLocation" class="dropdown form-control"
+						ng-value="filter.LocationId" ng-model="selectedLocation"
+						ng-options="l.Name for l in locations track by l.ID"></select>
+			</div>
 		</div>
+		<div>
+			<button type="button" class="btn btn-primary" ng-click="saveItem()">Save Item</button>
+		</div>
+		}
 	</div>
-	<error></error>
+	<div>
+		<error ng-attr-error-message="errorMessage" ng-attr-has-error="hasError"></error>
+	</div>
 </div>

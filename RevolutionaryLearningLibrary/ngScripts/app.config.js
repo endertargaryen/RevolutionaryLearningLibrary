@@ -80,4 +80,17 @@ angular.module('adminApp', []).component('siteName',
 	},
 	controllerAs: 'model',
 	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>'
-});
+})
+.directive('fdInput', [function ()
+{
+	return {
+		link: function (scope, element, attrs)
+		{
+			element.on('change', function (evt)
+			{
+				var files = evt.target.files;
+				scope.item.ImageName = files[0].name;
+			});
+		}
+	}
+}]);

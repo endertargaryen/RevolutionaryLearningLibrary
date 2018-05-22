@@ -178,6 +178,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\Helpers\HelperMethods.cs" />
     <Compile Include="Controllers\Helpers\RevConstants.cs" />
     <Compile Include="Controllers\Helpers\DataService.cs" />
     <Compile Include="Controllers\Helpers\RevAuthorize.cs" />

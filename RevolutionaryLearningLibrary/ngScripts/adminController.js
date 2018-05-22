@@ -15,7 +15,7 @@
 	 * Variables
 	 */
 
-	$scope.navbar = 
+	$scope.navbar =
 	[
 		{
 			"name": "Requests",
@@ -31,18 +31,44 @@
 		}
 	];
 
+	$scope.item = getBlankItem();
+	$scope.selectedAgeGroups = [0, 0, 0];
+
 	$scope.curTab = $scope.adminTab.requests;
 	$scope.hasError = false;
 	$scope.errorMessage = "";
+
+	$scope.init = function (subjects, ageGroups, locations, categories)
+	{
+		$scope.subjects = subjects;
+		$scope.ageGroups = ageGroups;
+		$scope.locations = locations;
+		$scope.categories = categories;
+	};
 
 	/*
 	 * Functions
 	 */
 
+	function getBlankItem()
+	{
+		return {
+			"Name": "",
+			"Description": "",
+			"ImageName": "",
+			"Item2AgeGroup": [],
+			"Item2Subject": [],
+		};
+	}
+
 	$scope.changeTab = function (newTab)
 	{
 		$scope.curTab = newTab;
 	};
+
+	/* 
+	 * Server Functions
+	 */
 
 	$scope.loadData = function ()
 	{
@@ -87,6 +113,28 @@
 		});
 	};
 
+	$scope.saveItem = function ()
+	{
+		$http.post("/Admin/SaveItem", $scope.item).then(
+		function success(data)
+		{
+			// save the file
+			document.forms["fileSubmitForm"].submit();
+		},
+		function error(data)
+		{
+			$scope.hasError = true;
+			$scope.errorMessage = data.data.StatusMessage;
+		});
+	};
+
 	// initial data load
 	$scope.loadData();
+
+	var tab = getParameter("tab");
+
+	if(tab !== null)
+	{
+		$scope.curTab = parseInt(tab, 10);
+	}
 });

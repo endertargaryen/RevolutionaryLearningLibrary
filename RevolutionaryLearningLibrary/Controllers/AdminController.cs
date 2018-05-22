@@ -2,10 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -72,6 +74,43 @@ namespace RevolutionaryLearningLibrary.Controllers
 			{
 				Data = retValue
 			};
+		}
+
+		public async Task<ActionResult> SaveItem(ItemDTO item)
+		{
+			ResultDTO result = await DataService.CallDataService<ResultDTO>("Admin", "SaveItem", item);
+
+			return new JsonResult
+			{
+				Data = result
+			};
+		}
+
+		[HttpPost]
+		public ActionResult UploadImage(HttpPostedFileBase httpFilePost)
+		{
+			if (Request.Files.Count > 0)
+			{
+				var file = Request.Files[0];
+
+				if (file != null && file.ContentLength > 0)
+				{
+					var fileName = Path.GetFileName(file.FileName);
+					var path = Path.Combine(Server.MapPath("~/Images/"), fileName);
+					file.SaveAs(path);
+
+					Helpers.HelperMethods.ResizeImage(path);
+				}
+			}
+
+			var routeValues = new RouteValueDictionary(new
+			{
+				action = "Index",
+				Controller = "Admin",
+				tab = 3 // send them back to add inventory
+			});
+
+			return new RedirectToRouteResult(routeValues);
 		}
 	}
 }
