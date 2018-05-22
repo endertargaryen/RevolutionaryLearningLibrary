@@ -22,7 +22,11 @@ namespace DTOCollection
 
 		public DateTime? CheckOutDate { get; set; }
 
+		public string CheckOutDateJS { get; set; }
+
 		public DateTime? RequestDate { get; set; }
+
+		public string RequestDateJS { get; set; }
 
 		public string Name { get; set; }
 

@@ -138,15 +138,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Models\AgeGroup.cs" />
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Helpers\ExtensionMethods.cs" />
+    <Compile Include="Helpers\HelperMethods.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Item2AgeGroup.cs" />
     <Compile Include="Models\Item2Subject.cs" />

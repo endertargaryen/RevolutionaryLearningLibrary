@@ -7,10 +7,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace RevolutionaryLearningLibrary
+namespace RevolutionaryLearningLibrary.Controllers
 {
 	public class DataService
 	{
@@ -37,6 +38,7 @@ namespace RevolutionaryLearningLibrary
 		public async Task<T> CallDataService<T>(string controller, string action, object postData = null) where T : DTOBase, new()
 		{
 			T retObj = default(T);
+			PropertyInfo[] properties = typeof(T).GetProperties();
 			string path = String.Format(DS_PATH, controller, action);
 			HttpResponseMessage response;
 
@@ -63,6 +65,17 @@ namespace RevolutionaryLearningLibrary
 				{
 					retObj.StatusCode = (int)response.StatusCode;
 					retObj.StatusCodeSuccess = true;
+
+					List<PropertyInfo> dates = (from n in properties
+												where n.PropertyType == typeof(DateTime) ||
+												n.PropertyType == typeof(DateTime?)
+												select n).ToList();
+
+					dates.ForEach(n =>
+					{
+						typeof(T).GetProperty(n.Name + "JS").SetValue(retObj,
+							(n.GetValue(retObj) == null ? "" : n.GetValue(retObj).ToString()));
+					});
 				}
 			}
 			else
@@ -80,7 +93,8 @@ namespace RevolutionaryLearningLibrary
 
 		public async Task<DTOList<T>> CallDataServiceList<T>(string controller, string action, object postData = null) where T : DTOBase, new()
 		{
-			DTOList<T> retObj = default(DTOList<T>);
+			PropertyInfo[] properties = typeof(T).GetProperties();
+			DTOList<T> retList = default(DTOList<T>);
 			string path = String.Format(DS_PATH, controller, action);
 			HttpResponseMessage response;
 
@@ -100,28 +114,39 @@ namespace RevolutionaryLearningLibrary
 
 			if (response.IsSuccessStatusCode)
 			{
-				retObj = await response.Content.ReadAsAsync<DTOList<T>>();
-				retObj.StatusCode = (int)response.StatusCode;
-				retObj.StatusCodeSuccess = true;
+				retList = await response.Content.ReadAsAsync<DTOList<T>>();
+				retList.StatusCode = (int)response.StatusCode;
+				retList.StatusCodeSuccess = true;
 
-				foreach (var obj in retObj)
+				foreach (var obj in retList)
 				{
 					obj.StatusCode = (int)response.StatusCode;
 					obj.StatusCodeSuccess = true;
+
+					List<PropertyInfo> dates = (from n in properties
+											where n.PropertyType == typeof(DateTime) ||
+											n.PropertyType == typeof(DateTime?)
+											select n).ToList();
+
+					dates.ForEach(n =>
+					{
+						typeof(T).GetProperty(n.Name + "JS").SetValue(obj,
+							(n.GetValue(obj) == null ? "" : n.GetValue(obj).ToString()));
+					});
 				}
 			}
 			else
 			{
-				retObj = new DTOList<T>();
+				retList = new DTOList<T>();
 				
-				retObj.StatusCode = (int)response.StatusCode;
-				retObj.StatusCodeSuccess = false;
+				retList.StatusCode = (int)response.StatusCode;
+				retList.StatusCodeSuccess = false;
 			}
 
 			Debug.WriteLine(JsonConvert.SerializeObject(postData));
-			Debug.WriteLine(JsonConvert.SerializeObject(retObj));
+			Debug.WriteLine(JsonConvert.SerializeObject(retList));
 
-			return retObj;
+			return retList;
 		}
 
 		public void SendEmail(string subject, string body, bool isError = false, string recipient = null)

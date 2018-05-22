@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Manage Library";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-app="adminApp" ng-controller="adminController">
+	<h2>Manage Library</h2>
+	<div class="navbar navbar-normal">
+		<div class="container">
+			<div>
+				<ul class="nav navbar-nav">
+					<li class="sub-navbar" ng-class="nav.id === curTab ? '__bold' : ''" 
+						ng-repeat="nav in navbar" ng-click="changeTab(nav.id)">{{nav.name}}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div ng-show="curTab === adminTab.requests">
+		<table class="table table-bordered table-responsive table-striped">
+			<thead>
+				<tr>
+					<th>Item Name</th>
+					<th>Requested By</th>
+					<th>Date Requested</th>
+					<th>Item Recieved?</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in requests">
+				<td>{{item.Name}}</td>
+				<td>{{item.AssociatedUser.FirstName + ' ' + item.AssociatedUser.LastName}}</td>
+				<td>{{item.RequestDateJS}}</td>
+				<td><button type="button" class="btn btn-default" ng-click="checkItemOut(item)">Check Out</button></td>
+			</tr>
+		</table>
+	</div>
+
+	<div ng-show="curTab === adminTab.checkouts">
+		<table class="table table-bordered table-responsive table-striped">
+			<thead>
+				<tr>
+					<th>Item Name</th>
+					<th>Checked Out By</th>
+					<th>Date Checked Out</th>
+					<th>Item Returned?</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="item in checkouts">
+				<td>{{item.Name}}</td>
+				<td>{{item.AssociatedUser.FirstName + ' ' + item.AssociatedUser.LastName}}</td>
+				<td>{{item.CheckOutDateJS}}</td>
+				<td><button type="button" class="btn btn-default" ng-click="checkItemIn(item)">Return</button></td>
+			</tr>
+		</table>
+	</div>
+	<div ng-show="curTab === adminTab.addInventory">
+		<div>
+
+		</div>
+	</div>
+	<error></error>
+</div>

@@ -15,7 +15,9 @@ function showModal(id)
 {
 	// align modal
 	var modal = $(".modal-dialog");
-	modal.css("margin-top", Math.max(0, ($(window).height() - modal.height()) / 2));
+
+	// divide by 3 to make it appear further up than halfway
+	modal.css("margin-top", ($(window).height() - modal.height()) / 3);
 
 	$("#" + id).modal();
 }

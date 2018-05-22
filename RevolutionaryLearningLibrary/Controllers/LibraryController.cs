@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
+	[RevAuthorize]
     public class LibraryController : Controller
     {
 		#region Fields & Properties
@@ -45,7 +46,6 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		#endregion
 
-		[Authorize]
 		public async Task<ActionResult> Index()
         {
 			var subjects = await DataService.CallDataServiceList<SubjectDTO>("Lookup", "GetSubjects");
@@ -68,7 +68,6 @@ namespace RevolutionaryLearningLibrary.Controllers
 			return new JsonResult { Data = items };
 		}
 
-		[Authorize]
 		public async Task<ActionResult> SubmitRequestList(DTOList<ItemDTO> items)
 		{
 			string identityUserId = User.Identity.GetUserId();

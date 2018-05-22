@@ -57,3 +57,27 @@ angular.module('passwordApp', []).component('error',
 	controllerAs: 'model',
 	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>'
 });
+
+/*
+ * Admin Controller
+ */
+
+angular.module('adminApp', []).component('siteName',
+{
+	template: '{{$ctrl.name}}',
+	controller: function ()
+	{
+		this.name = "Revolutionary Learning Library";
+	}
+
+	// error component
+}).component('error',
+{
+	bindings:
+	{
+		errorMessage: '<',
+		hasError: '<'
+	},
+	controllerAs: 'model',
+	template: '<div ng-show="model.hasError"><label class="text-danger col-md-offset-2">{{model.errorMessage}}</label></div>'
+});

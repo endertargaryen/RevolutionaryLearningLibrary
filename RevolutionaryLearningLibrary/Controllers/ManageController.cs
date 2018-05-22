@@ -12,7 +12,7 @@ using System.Net;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
-	[Authorize]
+	[RevAuthorize]
 	public class ManageController : Controller
 	{
 		private ApplicationUserManager _userManager;
@@ -49,7 +49,6 @@ namespace RevolutionaryLearningLibrary.Controllers
 			return View();
 		}
 
-		[Authorize]
 		public ActionResult ChangePassword()
 		{
 			ViewBag.Title = "Change Password";
@@ -58,8 +57,6 @@ namespace RevolutionaryLearningLibrary.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		[Authorize]
 		public async Task<ActionResult> ChangeUserPassword(ChangePasswordDTO data)
 		{
 			string email = User.Identity.GetUserName();

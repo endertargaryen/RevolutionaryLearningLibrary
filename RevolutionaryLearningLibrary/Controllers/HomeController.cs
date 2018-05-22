@@ -10,6 +10,8 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace RevolutionaryLearningLibrary.Controllers
 {
@@ -135,23 +137,23 @@ namespace RevolutionaryLearningLibrary.Controllers
 				appUser = exists;
 			}
 
-			var signInResult = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
-				true, false);
+			// add admin role
+			appUser.Claims.Add(new IdentityUserClaim
+			{
+				UserId = appUser.Id,
+				ClaimType = RevConstants.IS_ADMIN,
+				ClaimValue = user.IsAdmin.ToString()
+			});
 
-			// SignInManager is out of sync with the data service, update the manager
-			if (signInResult != SignInStatus.Success)
+			try
+			{
+				SignInManager.SignIn(appUser, true, true);	
+			}
+			catch(Exception ex)
 			{
 				var updateResult = await UserManager.UpdateAsync(appUser);
 
-				var signInResult2 = await SignInManager.PasswordSignInAsync(login.Email, login.Password,
-				true, false);
-
-				if(signInResult2 != SignInStatus.Success)
-				{
-					user.StatusCodeSuccess = false;
-					user.StatusCode = (int)HttpStatusCode.InternalServerError;
-					user.StatusMessage = "Problem signing in.  Please try again later";
-				}
+				SignInManager.SignIn(appUser, true, true);
 			}
 
 			return new JsonResult { Data = user };

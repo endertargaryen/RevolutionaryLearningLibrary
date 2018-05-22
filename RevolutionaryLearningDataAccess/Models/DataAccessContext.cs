@@ -7,6 +7,7 @@ namespace RevolutionaryLearningDataAccess.Models
 	using AutoMapper;
 	using System.Reflection;
 	using System.Collections.Generic;
+	using DTOCollection;
 
 	public partial class DataAccessContext : DbContext
 	{
@@ -27,22 +28,26 @@ namespace RevolutionaryLearningDataAccess.Models
 
 					var list = AppDomain.CurrentDomain.GetAssemblies()
 						   .SelectMany(t => t.GetTypes())
-						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.Models").ToList();
+						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.Models" &&
+								t.Name != "Item").ToList();
 
-					foreach (Type type in AppDomain.CurrentDomain.GetAssemblies()
+					foreach (Type dtoType in AppDomain.CurrentDomain.GetAssemblies()
 						   .SelectMany(t => t.GetTypes())
 						   .Where(t => t.IsClass && t.Namespace == "RevolutionaryLearningDataAccess.DTOs"))
 					{
-						var matchingType = (from n in list
-											where n.Name == type.Name.Replace("DTO", String.Empty)
-											select n).FirstOrDefault();
+						var entityType = (from n in list
+										  where n.Name == dtoType.Name.Replace("DTO", String.Empty)
+										  select n).FirstOrDefault();
 
-						if (matchingType != null)
-						{
-							cfg.CreateMap(matchingType, type);
-						}
+						cfg.CreateMap(entityType, dtoType);
 					}
-				});
+
+					cfg.CreateMap(typeof(Item), typeof(ItemDTO)).ForMember("StatusCode", n => n.Ignore()).
+						ForMember("StatusCodeSuccess", n => n.Ignore()).
+						ForMember("StatusMessage", n => n.Ignore()).
+						ForMember("RequestDateJS", n => n.Ignore()).
+						ForMember("CheckOutDateJS", n => n.Ignore());
+			});
 
 				_MapperInitialized = true;
 			}

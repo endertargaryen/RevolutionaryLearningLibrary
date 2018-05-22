@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -23,7 +24,19 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Library")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
+					@if (!User.Identity.IsAuthenticated)
+					{
+						// only show Contact link if not signed in
+						@: <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+					}
+					@if (User.Identity.IsAuthenticated && 
+						((ClaimsIdentity)User.Identity).FindFirst(RevConstants.IS_ADMIN) != null &&
+						bool.Parse(((ClaimsIdentity)User.Identity).FindFirst(RevConstants.IS_ADMIN).Value))
+					{
+						// only show Manage Inventory link if they are an admin
+						@:<li>@Html.ActionLink("Manage Library", "Index", "Admin")</li>
+					}
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

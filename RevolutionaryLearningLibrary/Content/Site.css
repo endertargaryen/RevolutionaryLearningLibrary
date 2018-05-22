@@ -108,6 +108,28 @@ textarea {
   height: 15px;
 }
 
+.sub-navbar
+{
+  color: black;
+  padding: 15px 15px;
+  line-height: 20px;
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sub-navbar:hover
+{
+  color: #808080;
+}
+
+.navbar-normal
+{
+  background-color: #dedede;
+}
+
 /* Direct modifiers */
 .__inline-block
 {

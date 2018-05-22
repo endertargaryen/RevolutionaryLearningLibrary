@@ -177,7 +177,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\Helpers\RevConstants.cs" />
     <Compile Include="Controllers\Helpers\DataService.cs" />
+    <Compile Include="Controllers\Helpers\RevAuthorize.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\LibraryController.cs" />
@@ -202,6 +205,7 @@
     <Content Include="Images\macmillanmcgrawhillmath.jpg" />
     <Content Include="Images\redx.png" />
     <Content Include="Images\TheBigLetsLearnMathBook.jpg" />
+    <Content Include="ngScripts\adminController.js" />
     <Content Include="ngScripts\app.config.js" />
     <Content Include="ngScripts\constants.js" />
     <Content Include="ngScripts\helperFunctions.js" />
@@ -1020,10 +1024,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
-    <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Library\Index.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
