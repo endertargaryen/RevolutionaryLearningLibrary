@@ -5,7 +5,8 @@
 }
 
 <div ng-app="adminApp" ng-controller="adminController"
-	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', '@ViewBag.Locations', '@ViewBag.Categories')">
+	 ng-init="init('@ViewBag.Subjects', '@ViewBag.AgeGroups', 
+	 '@ViewBag.Locations', '@ViewBag.SubLocations', '@ViewBag.Categories')">
 	<h2>Manage Library</h2>
 	<div class="navbar navbar-normal">
 		<div class="container">
@@ -73,28 +74,34 @@
 				<input fd-input type="file" name="httpFilePost" id="httpFilePost" accept="image/*"/>
 			</div>
 			<div class="form-group">
-				<label for="ddlLocation" class="form-label">Location:</label>
+				<label for="ddlCategory" class="form-label">Item Type:</label>
 				<select id="ddlLocation" class="dropdown form-control"
-						ng-value="filter.LocationId" ng-model="selectedLocation"
-						ng-options="l.Name for l in locations track by l.ID"></select>
+						ng-model="item.Category"
+						ng-options="c.Name for c in categories track by c.ID"></select>
 			</div>
 			<div class="form-group" ng-repeat="n in selectedAgeGroups track by $index">
 				<label for="ddlAgeGroup" class="form-label">Age Group {{$index + 1}}:</label>
 				<select id="ddlAgeGroup" class="dropdown form-control"
-					ng-value="filter.AgeGroupId" ng-model="n"
+					ng-model="selectedAgeGroups[$index]"
 					ng-options="a.Name for a in ageGroups track by a.ID"></select>
 			</div>
-			<div class="form-group" ng-repeat="n in [1, 2]">
-				<label for="ddlSubject" class="form-label">Subject {{n}}:</label>
+			<div class="form-group" ng-repeat="s in selectedSubjects track by $index">
+				<label for="ddlSubject" class="form-label">Subject {{$index + 1}}:</label>
 				<select id="ddlSubject" class="dropdown form-control"
-						ng-value="filter.SubjectId" ng-model="selectedSubject"
+						ng-model="selectedSubjects[$index]"
 						ng-options="s.Name for s in subjects track by s.ID"></select>
 			</div>
 			<div class="form-group">
 				<label for="ddlLocation" class="form-label">Location:</label>
 				<select id="ddlLocation" class="dropdown form-control"
-						ng-value="filter.LocationId" ng-model="selectedLocation"
+						ng-model="item.Location" ng-change="locationChanged()"
 						ng-options="l.Name for l in locations track by l.ID"></select>
+			</div>
+			<div class="form-group">
+				<label for="ddlLocation" class="form-label">Sub-Location:</label>
+				<select id="ddlLocation" class="dropdown form-control"
+						ng-model="item.SubLocation"
+						ng-options="sl.Name for sl in subLocationsToDisplay track by sl.ID"></select>
 			</div>
 		</div>
 		<div>

@@ -41,6 +41,7 @@ textarea {
 
 .thumbnail
 {
+  max-height: 130px;
   max-width: 100px;
   display: inline-block;
   vertical-align: top;
@@ -50,6 +51,7 @@ textarea {
 .form-label
 {
   margin-left: 5px;
+  width: 100px;
 }
 
 .item-panel
@@ -169,6 +171,11 @@ textarea {
 .__margin-bottom-10
 {
   margin-bottom: 10px;
+}
+
+.__margin-left-5
+{
+  margin-left: 5px;
 }
 
 .__margin-left-10

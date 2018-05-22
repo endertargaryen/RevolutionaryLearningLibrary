@@ -32,18 +32,21 @@
 	];
 
 	$scope.item = getBlankItem();
-	$scope.selectedAgeGroups = [0, 0, 0];
+	$scope.selectedAgeGroups = [null, null, null];
+	$scope.selectedSubjects = [null, null, null];
+	$scope.subLocationsToDisplay = [];
 
 	$scope.curTab = $scope.adminTab.requests;
 	$scope.hasError = false;
 	$scope.errorMessage = "";
 
-	$scope.init = function (subjects, ageGroups, locations, categories)
+	$scope.init = function (subjects, ageGroups, locations, subLocations, categories)
 	{
-		$scope.subjects = subjects;
-		$scope.ageGroups = ageGroups;
-		$scope.locations = locations;
-		$scope.categories = categories;
+		$scope.subjects = JSON.parse(subjects);
+		$scope.ageGroups = JSON.parse(ageGroups);
+		$scope.locations = JSON.parse(locations);
+		$scope.subLocations = JSON.parse(subLocations);
+		$scope.categories = JSON.parse(categories);
 	};
 
 	/*
@@ -58,12 +61,28 @@
 			"ImageName": "",
 			"Item2AgeGroup": [],
 			"Item2Subject": [],
+			"Category": null,
+			"Location": null,
+			"SubLocation": null
 		};
 	}
 
 	$scope.changeTab = function (newTab)
 	{
 		$scope.curTab = newTab;
+	};
+
+	$scope.locationChanged = function ()
+	{
+		$scope.subLocationsToDisplay = [];
+
+		for(var i = 0; i < $scope.subLocations.length; i++)
+		{
+			if ($scope.subLocations[i].LocationId === $scope.item.Location.ID)
+			{
+				$scope.subLocationsToDisplay.push($scope.subLocations[i]);
+			}
+		}
 	};
 
 	/* 
@@ -115,12 +134,48 @@
 
 	$scope.saveItem = function ()
 	{
+		// set IDs
+		$scope.item.LocationId = $scope.item.Location.ID;
+		$scope.item.CategoryId = $scope.item.Category.ID;
+
+		if ($scope.item.SubLocation !== null)
+		{
+			$scope.item.SubLocationId = $scope.item.SubLocation.ID;
+		}
+
+		$scope.item.Item2AgeGroup =[];
+		$scope.item.Item2Subject =[];
+
+			// add many-to-many age groups
+			for (var i = 0; i < $scope.selectedAgeGroups.length; i++)
+			{
+				if($scope.selectedAgeGroups[i] !== null)
+			{
+				$scope.item.Item2AgeGroup.push(
+					{
+						"AgeGroupId": $scope.selectedAgeGroups[i].ID
+			});
+			}
+		}
+
+			// add many-to-many subjects
+			for (var i = 0; i < $scope.selectedSubjects.length; i++)
+			{
+				if ($scope.selectedSubjects[i] !== null)
+			{
+				$scope.item.Item2Subject.push(
+					{
+						"SubjectId": $scope.selectedSubjects[i].ID
+			});
+			}
+		}
+
 		$http.post("/Admin/SaveItem", $scope.item).then(
 		function success(data)
 		{
 			// save the file
 			document.forms["fileSubmitForm"].submit();
-		},
+},
 		function error(data)
 		{
 			$scope.hasError = true;

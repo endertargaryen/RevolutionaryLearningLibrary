@@ -81,34 +81,33 @@
 					<img class="big-image" ng-src="~/Images/{{selectedItem.ImageName}}" />
 					<div>
 						Description:
-						<label class="form-label">{{selectedItem.Description}}</label>
+						<label class="__margin-left-5">{{selectedItem.Description}}</label>
 					</div>
 				</div>
 				<div class="form-group right-panel">
 					<div class="__margin-10">
 						<span>Location:</span>
-						<label class="form-label">{{selectedItem.Location.Name}}</label>
+						<label class="__margin-left-5">{{selectedItem.Location.Name}}</label>
 					</div>
 					<div class="__margin-10" ng-show="selectedItem.SubLocation !== null">
 						<span>Sub-Location:</span>
-						<label class="form-label">{{selectedItem.SubLocation.Name}}</label>
+						<label class="__margin-left-5">{{selectedItem.SubLocation.Name}}</label>
 					</div>
 					<div class="__margin-10">
 						<span>Age Group(s):</span>
-						<label class="form-label" ng-repeat="ag in selectedItem.Item2AgeGroup">
+						<label class="__margin-left-5" ng-repeat="ag in selectedItem.Item2AgeGroup">
 							{{ag.AgeGroup.Name}}
 						</label>
 					</div>
 					<div class="__margin-10">
 						<span>Subject(s):</span>
-						<label class="form-label" ng-repeat="s in selectedItem.Item2Subject">
+						<label class="__margin-left-5" ng-repeat="s in selectedItem.Item2Subject">
 							{{s.Subject.Name}}
 						</label>
 					</div>
 					<div class="__margin-10">
 						<span>Barcode:</span>
-						<img class="med-image" ng-src="~/Images/{{selectedItem.Barcode}}.jpg" />
-
+						<img class="med-image" ng-src="~/Images/{{selectedItem.Barcode}}" />
 					</div>
 				</div>
 				<div class="form-group">

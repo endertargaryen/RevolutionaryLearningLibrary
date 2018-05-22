@@ -33,8 +33,20 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		#endregion
 
-		public ActionResult Index()
+		public async Task<ActionResult> Index()
         {
+			var subjects = await DataService.CallDataServiceList<SubjectDTO>("Lookup", "GetSubjects");
+			var ageGroups = await DataService.CallDataServiceList<AgeGroupDTO>("Lookup", "GetAgeGroups");
+			var locations = await DataService.CallDataServiceList<LocationDTO>("Lookup", "GetLocations");
+			var categories = await DataService.CallDataServiceList<CategoryDTO>("Lookup", "GetCategories");
+			var subLocations = await DataService.CallDataServiceList<SubLocationDTO>("Lookup", "GetSubLocations");
+
+			ViewBag.Subjects = JsonConvert.SerializeObject(subjects);
+			ViewBag.AgeGroups = JsonConvert.SerializeObject(ageGroups);
+			ViewBag.Locations = JsonConvert.SerializeObject(locations);
+			ViewBag.SubLocations = JsonConvert.SerializeObject(subLocations);
+			ViewBag.Categories = JsonConvert.SerializeObject(categories);
+
 			return View();
         }
 
@@ -55,7 +67,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 				Data = dto
 			};
 		}
-
+		
 		public async Task<ActionResult> CheckItemIn(ItemDTO item)
 		{
 			var retValue = await DataService.CallDataService<ResultDTO>("Admin", "CheckItemIn", item);

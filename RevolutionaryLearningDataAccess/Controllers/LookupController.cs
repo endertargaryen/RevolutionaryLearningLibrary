@@ -32,10 +32,10 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			using (var context = new DataAccessContext())
 			{
-				var categories = (from n in context.Subjects
+				var subjects = (from n in context.Subjects
 								  select n).ToList();
 
-				retValue = retValue.DTOConvert(categories);
+				retValue = retValue.DTOConvert(subjects);
 			}
 
 			return retValue;
@@ -47,10 +47,10 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			using (var context = new DataAccessContext())
 			{
-				var categories = (from n in context.AgeGroups
+				var ageGroups = (from n in context.AgeGroups
 								  select n).ToList();
 
-				retValue = retValue.DTOConvert(categories);
+				retValue = retValue.DTOConvert(ageGroups);
 			}
 
 			return retValue;
@@ -62,10 +62,25 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			using (var context = new DataAccessContext())
 			{
-				var categories = (from n in context.Locations
+				var locations = (from n in context.Locations
 								  select n).ToList();
 
-				retValue = retValue.DTOConvert(categories);
+				retValue = retValue.DTOConvert(locations);
+			}
+
+			return retValue;
+		}
+
+		public DTOList<SubLocationDTO> GetSubLocations()
+		{
+			DTOList<SubLocationDTO> retValue = null;
+
+			using (var context = new DataAccessContext())
+			{
+				var subLocations = (from n in context.SubLocations
+								  select n).ToList();
+
+				retValue = retValue.DTOConvert(subLocations);
 			}
 
 			return retValue;
