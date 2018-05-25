@@ -1,6 +1,8 @@
 ﻿using DTOCollection;
 using RevolutionaryLearningDataAccess.Models;
+using RevolutionaryLearningLibrary.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
@@ -19,6 +21,8 @@ namespace RevolutionaryLearningDataAccess.Controllers
 							 select i).ToList();
 
 				retValue = retValue.DTOConvert(items);
+
+				retValue.StatusMessage = $"Found {items.Count} items";
 			}
 
 			return retValue;
@@ -58,6 +62,8 @@ namespace RevolutionaryLearningDataAccess.Controllers
 				}
 
 				retValue = retValue.DTOConvert(items);
+
+				retValue.StatusMessage = $"Found {items.Count} items";
 			}
 
 			return retValue;
@@ -89,7 +95,8 @@ namespace RevolutionaryLearningDataAccess.Controllers
 					result = new ResultDTO
 					{
 						StatusCode = (int)HttpStatusCode.OK,
-						StatusCodeSuccess = true
+						StatusCodeSuccess = true,
+						StatusMessage = $"Updated {items.Count} items"
 					};
 				}
 			}
@@ -117,9 +124,128 @@ namespace RevolutionaryLearningDataAccess.Controllers
 							select n).FirstOrDefault();
 
 				retValue = retValue.DTOConvert(item);
+				retValue.StatusMessage = $"Found Item";
 			}
 
 			return retValue;
 		}
-    }
+
+		[HttpPost]
+		public ResultDTO DeleteItem(IdDTO idDTO)
+		{
+			ResultDTO result = new ResultDTO();
+
+			using (var context = new DataAccessContext())
+			{
+				var authResult = idDTO.Authenticate(context);
+
+				if(!authResult.StatusCodeSuccess)
+				{
+					return authResult;
+				}
+
+				// remove foreign keys
+				List<Item2AgeGroup> item2AgeGroups = (from n in context.Item2AgeGroup
+													  where n.ItemId == idDTO.ID
+													  select n).ToList();
+
+				item2AgeGroups.ForEach(n => context.Item2AgeGroup.Remove(n));
+
+				List<Item2Subject> item2Subjects = (from n in context.Item2Subject
+													where n.ItemId == idDTO.ID
+													select n).ToList();
+
+				item2Subjects.ForEach(n => context.Item2Subject.Remove(n));
+
+				// delete item
+				Item curItem = (from n in context.Items
+								where n.ID == idDTO.ID
+								select n).First();
+
+				result.StatusMessage = "Deleted 1 item";
+
+				context.Items.Remove(curItem);
+
+				context.SaveChanges();
+			}
+
+			return result;
+		}
+
+		public ResultDTO SaveItem(ItemDTO item)
+		{
+			ResultDTO result = new ResultDTO();
+
+			using (var context = new DataAccessContext())
+			{
+				var authResult = item.Authenticate(context);
+
+				if(!authResult.StatusCodeSuccess)
+				{
+					return authResult;
+				}
+
+				if (item.ID > 0)
+				{
+					Item curItem = (from n in context.Items
+									where n.ID == item.ID
+									select n).First();
+
+					curItem.Barcode = item.Barcode;
+					curItem.CategoryId = item.CategoryId;
+					curItem.Description = item.Description;
+					curItem.ImageName = item.ImageName;
+					curItem.LocationId = item.LocationId;
+					curItem.Name = item.Name;
+					curItem.SubCategoryId = item.SubCategoryId;
+					curItem.SubLocationId = item.SubLocationId;
+
+					result.StatusMessage = "Found 1 item to edit";
+				}
+				else
+				{
+					Item newItem = new Item
+					{
+						Barcode = item.Barcode,
+						CategoryId = item.CategoryId,
+						Description = item.Description,
+						ImageName = item.ImageName,
+						LocationId = item.LocationId,
+						Name = item.Name,
+						SubCategoryId = item.SubCategoryId,
+						SubLocationId = item.SubLocationId
+					};
+
+					context.Items.Add(newItem);
+
+					result.StatusMessage = "Inserted 1 item";
+
+					context.SaveChanges();
+
+					// add many to many values
+					foreach (var ageGroup in item.Item2AgeGroup)
+					{
+						newItem.Item2AgeGroup.Add(new Item2AgeGroup
+						{
+							AgeGroupId = ageGroup.AgeGroupId,
+							ItemId = newItem.ID
+						});
+					}
+
+					foreach (var subject in item.Item2Subject)
+					{
+						newItem.Item2Subject.Add(new Item2Subject
+						{
+							SubjectId = subject.SubjectId,
+							ItemId = newItem.ID
+						});
+					}
+				}
+
+				context.SaveChanges();
+			}
+
+			return result;
+		}
+	}
 }

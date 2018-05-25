@@ -1,6 +1,7 @@
 ﻿using DTOCollection;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -48,7 +49,17 @@ namespace RevolutionaryLearningLibrary.Controllers
 			}
 			else
 			{
-				response = await Client.PostAsJsonAsync(path, postData);
+				// only support a GET by the ID
+				if (!(postData is DTOBase || postData is IList))
+				{
+					path += "?id=" + postData;
+
+					response = await Client.GetAsync(path);
+				}
+				else
+				{
+					response = await Client.PostAsJsonAsync(path, postData);
+				}
 			}
 
 			if(response.IsSuccessStatusCode)

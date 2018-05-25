@@ -40,13 +40,14 @@
 	$scope.hasError = false;
 	$scope.errorMessage = "";
 
-	$scope.init = function (subjects, ageGroups, locations, subLocations, categories)
+	$scope.init = function (subjects, ageGroups, locations, subLocations, categories, item)
 	{
 		$scope.subjects = JSON.parse(subjects);
 		$scope.ageGroups = JSON.parse(ageGroups);
 		$scope.locations = JSON.parse(locations);
 		$scope.subLocations = JSON.parse(subLocations);
 		$scope.categories = JSON.parse(categories);
+		$scope.item = JSON.parse(item);
 	};
 
 	/*
@@ -89,13 +90,24 @@
 	 * Server Functions
 	 */
 
-	$scope.loadData = function ()
+	$scope.loadData = function (itemID)
 	{
-		$http.get("/Admin/GetInitialData").
+		if (itemID === undefined || itemID === null)
+		{
+			itemID = 0;
+		}
+
+		var idDTO =
+			{
+				"ID": itemID
+			};
+
+		$http.post("/Admin/GetInitialData", idDTO).
 		then(function success(data)
 		{
 			$scope.requests = data.data.Requests;
 			$scope.checkouts = data.data.Checkouts;
+			$scope.item = data.data.Item;
 		},
 		function error(data)
 		{
@@ -184,7 +196,10 @@
 	};
 
 	// initial data load
-	$scope.loadData();
+
+	var itemID = getParameter("itemID");
+	
+	$scope.loadData(parseInt(itemID));
 
 	var tab = getParameter("tab");
 

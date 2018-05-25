@@ -8,6 +8,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Reflection;
 using System.Collections;
+using RevolutionaryLearningDataAccess.Models;
+using System.Net;
 
 namespace RevolutionaryLearningDataAccess
 {
@@ -96,6 +98,24 @@ namespace RevolutionaryLearningDataAccess
 			}
 
 			return sBuilder.ToString();
+		}
+
+		public static ResultDTO Authenticate(this DTOBase obj, DataAccessContext context)
+		{
+			var result = new ResultDTO();
+
+			var isAuthenticated = (from n in context.Users
+								   where n.ID == obj.UserIdForAuth
+								   select n).First().IsAdmin;
+
+			if (!isAuthenticated)
+			{
+				result.StatusCode = (int)HttpStatusCode.Forbidden;
+				result.StatusCodeSuccess = false;
+				result.StatusMessage = "This user does not have access to endpoint";
+			}
+
+			return result;
 		}
 	}
 }

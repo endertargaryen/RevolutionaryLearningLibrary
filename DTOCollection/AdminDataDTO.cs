@@ -11,5 +11,8 @@ namespace DTOCollection
 		public DTOList<ItemDTO> Requests { get; set; }
 
 		public DTOList<ItemDTO> Checkouts { get; set; }
+
+
+		public ItemDTO Item { get; set; }
 	}
 }

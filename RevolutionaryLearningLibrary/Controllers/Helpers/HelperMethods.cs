@@ -4,13 +4,24 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNet.Identity;
 
-namespace RevolutionaryLearningLibrary.Controllers.Helpers
+namespace RevolutionaryLearningLibrary.Controllers
 {
 	public class HelperMethods
 	{
 		private const double MAX_WIDTH = 400;
+
+		public static int GetAuthenticationId(IPrincipal user)
+		{
+			string idValue = user.Identity.GetUserId();
+
+			return Convert.ToInt32(idValue);
+		}
 
 		public static void ResizeImage(string path)
 		{

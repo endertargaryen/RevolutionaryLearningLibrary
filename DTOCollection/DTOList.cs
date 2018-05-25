@@ -17,5 +17,7 @@ namespace DTOCollection
 	{
 		public int StatusCode { get; set; }
 		public bool StatusCodeSuccess { get; set; }
+
+		public string StatusMessage { get; set; }
 	}
 }

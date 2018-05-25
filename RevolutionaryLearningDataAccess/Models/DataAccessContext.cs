@@ -24,7 +24,8 @@ namespace RevolutionaryLearningDataAccess.Models
 					cfg.CreateMissingTypeMaps = true;
 					cfg.ForAllMaps((map, exp) => exp.ForMember("StatusCode", n => n.Ignore()).
 						ForMember("StatusCodeSuccess", n => n.Ignore()).
-						ForMember("StatusMessage", n => n.Ignore()));
+						ForMember("StatusMessage", n => n.Ignore()).
+						ForMember("UserIdForAuth", n => n.Ignore()));
 
 					var list = AppDomain.CurrentDomain.GetAssemblies()
 						   .SelectMany(t => t.GetTypes())

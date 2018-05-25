@@ -17,11 +17,6 @@ namespace RevolutionaryLearningLibrary.Controllers
 			_requiresAdminAccess = requiresAdminAccess;
 		}
 
-		public override void OnAuthorization(AuthorizationContext filterContext)
-		{
-			base.OnAuthorization(filterContext);
-		}
-
 		protected override bool AuthorizeCore(HttpContextBase httpContext)
 		{
 			bool authorize = base.AuthorizeCore(httpContext);

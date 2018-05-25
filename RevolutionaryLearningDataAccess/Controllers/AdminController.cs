@@ -50,6 +50,13 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			using (var context = new DataAccessContext())
 			{
+				var authResult = itemDto.Authenticate(context);
+
+				if(!authResult.StatusCodeSuccess)
+				{
+					return authResult;
+				}
+
 				Item item = (from n in context.Items
 							 where n.ID == itemDto.ID
 							 select n).First();
@@ -78,6 +85,13 @@ namespace RevolutionaryLearningDataAccess.Controllers
 
 			using (var context = new DataAccessContext())
 			{
+				var authResult = itemDto.Authenticate(context);
+
+				if (!authResult.StatusCodeSuccess)
+				{
+					return authResult;
+				}
+
 				Item item = (from n in context.Items
 							 where n.ID == itemDto.ID
 							 select n).First();
@@ -98,53 +112,6 @@ namespace RevolutionaryLearningDataAccess.Controllers
 			}
 
 			return retValue;
-		}
-
-		public ResultDTO SaveItem(ItemDTO item)
-		{
-			ResultDTO result = new ResultDTO();
-
-			using (var context = new DataAccessContext())
-			{
-				Item newItem = new Item
-				{
-					Barcode = item.Barcode,
-					CategoryId = item.CategoryId,
-					Description = item.Description,
-					ImageName = item.ImageName,
-					LocationId = item.LocationId,
-					Name = item.Name,
-					SubCategoryId = item.SubCategoryId,
-					SubLocationId = item.SubLocationId
-				};
-				
-				context.Items.Add(newItem);
-
-				context.SaveChanges();
-
-				// add many to many values
-				foreach (var ageGroup in item.Item2AgeGroup)
-				{
-					newItem.Item2AgeGroup.Add(new Item2AgeGroup
-					{
-						AgeGroupId = ageGroup.AgeGroupId,
-						ItemId = newItem.ID
-					});
-				}
-
-				foreach (var subject in item.Item2Subject)
-				{
-					newItem.Item2Subject.Add(new Item2Subject
-					{
-						SubjectId = subject.SubjectId,
-						ItemId = newItem.ID
-					});
-				}
-
-				context.SaveChanges();
-			}
-
-			return result;
 		}
 	}
 }

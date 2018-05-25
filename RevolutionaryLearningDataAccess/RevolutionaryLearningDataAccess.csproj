@@ -173,6 +173,10 @@
       <Project>{3b674eb0-3faf-43ed-a76b-de8e04a110de}</Project>
       <Name>DTOCollection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevolutionaryLearningLibrary\RevolutionaryLearningLibrary.csproj">
+      <Project>{E9FD947A-4612-492F-BC1C-ABA368002A8A}</Project>
+      <Name>RevolutionaryLearningLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

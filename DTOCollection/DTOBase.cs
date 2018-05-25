@@ -8,6 +8,8 @@ namespace DTOCollection
 {
 	public abstract class DTOBase
 	{
+		public int UserIdForAuth { get; set; }
+
 		public int StatusCode { get; set; }
 		public bool StatusCodeSuccess { get; set; }
 

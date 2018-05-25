@@ -1,9 +1,11 @@
 ﻿using DTOCollection;
+using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +19,20 @@ namespace RevolutionaryLearningLibrary.Controllers
 		#region Fields & Properties
 
 		private DataService _dataService;
+		private ApplicationSignInManager _signInManager;
+
+		private ApplicationSignInManager SignInManager
+		{
+			get
+			{
+				if(_signInManager == null)
+				{
+					_signInManager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+				}
+
+				return _signInManager;
+			}
+		}
 
 		private DataService DataService
 		{
@@ -50,15 +66,23 @@ namespace RevolutionaryLearningLibrary.Controllers
 			return View();
         }
 
-		public async Task<ActionResult> GetInitialData()
+		[HttpPost]
+		public async Task<ActionResult> GetInitialData(IdDTO idDto)
 		{
 			var requests = await DataService.CallDataServiceList<ItemDTO>("Admin", "GetItemRequests");
 			var checkouts = await DataService.CallDataServiceList<ItemDTO>("Admin", "GetItemCheckouts");
+			var item = new ItemDTO();
+
+			if(idDto.ID > 0)
+			{
+				item = await DataService.CallDataService<ItemDTO>("Item", "Get", idDto.ID);
+			}
 
 			AdminDataDTO dto = new AdminDataDTO
 			{
 				Checkouts = checkouts,
-				Requests = requests
+				Requests = requests,
+				Item = item
 			};
 
 			return new JsonResult
@@ -70,6 +94,10 @@ namespace RevolutionaryLearningLibrary.Controllers
 		
 		public async Task<ActionResult> CheckItemIn(ItemDTO item)
 		{
+			int authId = HelperMethods.GetAuthenticationId(User);
+
+			item.UserIdForAuth = authId;
+
 			var retValue = await DataService.CallDataService<ResultDTO>("Admin", "CheckItemIn", item);
 
 			return new JsonResult
@@ -80,6 +108,10 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		public async Task<ActionResult> CheckItemOut(ItemDTO item)
 		{
+			int authId = HelperMethods.GetAuthenticationId(User);
+
+			item.UserIdForAuth = authId;
+
 			var retValue = await DataService.CallDataService<ResultDTO>("Admin", "CheckItemOut", item);
 
 			return new JsonResult
@@ -90,12 +122,30 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		public async Task<ActionResult> SaveItem(ItemDTO item)
 		{
-			ResultDTO result = await DataService.CallDataService<ResultDTO>("Admin", "SaveItem", item);
+			int authId = HelperMethods.GetAuthenticationId(User);
+
+			item.UserIdForAuth = authId;
+
+			ResultDTO result = await DataService.CallDataService<ResultDTO>("Item", "SaveItem", item);
 
 			return new JsonResult
 			{
 				Data = result
 			};
+		}
+
+		public async Task<ActionResult> DeleteItem(ItemDTO item)
+		{
+			int authId = HelperMethods.GetAuthenticationId(User);
+
+			ResultDTO result = await DataService.CallDataService<ResultDTO>("Item", "DeleteItem",
+				new IdDTO
+				{
+					ID = item.ID,
+					UserIdForAuth = authId
+				});
+
+			return new JsonResult { Data = result };
 		}
 
 		[HttpPost]
@@ -111,7 +161,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 					var path = Path.Combine(Server.MapPath("~/Images/"), fileName);
 					file.SaveAs(path);
 
-					Helpers.HelperMethods.ResizeImage(path);
+					HelperMethods.ResizeImage(path);
 				}
 			}
 

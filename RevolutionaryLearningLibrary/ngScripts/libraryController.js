@@ -26,7 +26,7 @@
 	$scope.checkoutItems = [];
 
 	// initialization
-	$scope.init = function (subjects, ageGroups, locations, categories)
+	$scope.init = function (subjects, ageGroups, locations, categories, isAdmin)
 	{
 		$scope.subjects = JSON.parse(subjects);
 		$scope.ageGroups = JSON.parse(ageGroups);
@@ -34,6 +34,8 @@
 		$scope.categories = JSON.parse(categories);
 
 		$scope.selectedCategory = findItemInArray($scope.categories, "ID", $scope.filter.CategoryId);
+
+		$scope.isAdmin = isAdmin;
 	}
 
 	/*
@@ -106,6 +108,11 @@
 		showModal("itemModal");
 	};
 
+	$scope.editItem = function (item)
+	{
+		window.location = "/Admin/Index?tab=3&itemID=" + item.ID;
+	};
+
 	/*
 	 * Server Functions
 	 */
@@ -155,9 +162,25 @@
 			},
 			function error(data)
 			{
-				$scope.errorMessage = data;
+				$scope.error = true;
+				$scope.errorMessage = data.data;
 			});
 		}
+	};
+
+	$scope.deleteItem = function (item)
+	{
+		$http.post("/Admin/DeleteItem", item).
+			then(function success(data)
+			{
+				// refresh items
+				$scope.getItems();
+			},
+			function error(data)
+			{
+				$scope.error = true;
+				$scope.errorMessage = data.data;
+			});
 	};
 
 	/*

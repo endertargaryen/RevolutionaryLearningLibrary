@@ -105,15 +105,18 @@ namespace RevolutionaryLearningLibrary.Controllers
 			UserDTO user = await DataService.CallDataService<UserDTO>("user", "VerifyUser",
 									postData: login);
 
-			if (user.StatusCodeSuccess && user.StatusCode == (int)HttpStatusCode.NoContent)
+			if (!user.StatusCodeSuccess)
 			{
-				user.StatusMessage = "Invalid username or password";
+				if (user.StatusCode == (int)HttpStatusCode.NoContent)
+				{
+					user.StatusMessage = "Invalid username or password";
+				}
+				else
+				{
+					user.StatusMessage = $"error: {user.StatusCode}";
+				}
 
 				return new JsonResult { Data = user };
-			}
-			else
-			{
-				user.StatusMessage = $"Internal Server Error - error code: {(HttpStatusCode)user.StatusCode}";
 			}
 
 			var appUser = new ApplicationUser
@@ -147,12 +150,18 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 			try
 			{
-				SignInManager.SignIn(appUser, true, true);	
+				var validUserName = UserManager.FindByName(login.Email);
+
+				var valid = SignInManager.UserManager.CheckPassword(appUser, login.Password);
+
+				if(valid)
+				{
+					SignInManager.PasswordSignIn(login.Email, login.Password, true, false);
+				}
 			}
 			catch(Exception ex)
 			{
 				var updateResult = await UserManager.UpdateAsync(appUser);
-
 				SignInManager.SignIn(appUser, true, true);
 			}
 

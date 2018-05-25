@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -48,6 +49,13 @@ namespace RevolutionaryLearningLibrary.Controllers
 
 		public async Task<ActionResult> Index()
         {
+			ClaimsIdentity identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+			// check if they are an admin
+			Claim adminClaim = identity.FindFirst(RevConstants.IS_ADMIN);
+
+			bool isAdmin = (adminClaim != null && bool.Parse(adminClaim.Value));
+
 			var subjects = await DataService.CallDataServiceList<SubjectDTO>("Lookup", "GetSubjects");
 			var ageGroups = await DataService.CallDataServiceList<AgeGroupDTO>("Lookup", "GetAgeGroups");
 			var locations = await DataService.CallDataServiceList<LocationDTO>("Lookup", "GetLocations");
@@ -57,6 +65,7 @@ namespace RevolutionaryLearningLibrary.Controllers
 			ViewBag.AgeGroups = JsonConvert.SerializeObject(ageGroups);
 			ViewBag.Locations = JsonConvert.SerializeObject(locations);
 			ViewBag.Categories = JsonConvert.SerializeObject(categories);
+			ViewBag.IsAdmin = (isAdmin ? 1 : 0);
 
             return View();
         }

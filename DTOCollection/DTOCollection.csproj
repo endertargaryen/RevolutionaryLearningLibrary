@@ -47,6 +47,7 @@
     <Compile Include="DTOBase.cs" />
     <Compile Include="DTOList.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="IdDTO.cs" />
     <Compile Include="Item2AgeGroupDTO.cs" />
     <Compile Include="Item2SubjectDTO.cs" />
     <Compile Include="ItemDTO.cs" />
