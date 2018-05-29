@@ -67,6 +67,27 @@
 			"SubLocation": null
 		};
 	}
+	
+	function setEditValues(item)
+	{
+		// set many-to-many age groups
+		for (var i = 0; i < item.Item2AgeGroup.length; i++)
+		{
+			if (item.Item2AgeGroup[i] !== null)
+			{
+				$scope.selectedAgeGroups[i] = item.Item2AgeGroup[i].AgeGroup;
+			}
+		}
+
+		// set many-to-many subjects
+		for (var i = 0; i < item.Item2Subject.length; i++)
+		{
+			if (item.Item2Subject[i] !== null)
+			{
+				$scope.selectedSubjects[i] = item.Item2Subject[i].Subject;
+			}
+		}
+	};
 
 	$scope.changeTab = function (newTab)
 	{
@@ -108,6 +129,11 @@
 			$scope.requests = data.data.Requests;
 			$scope.checkouts = data.data.Checkouts;
 			$scope.item = data.data.Item;
+
+			if($scope.item.ID > 0)
+			{
+				setEditValues($scope.item);
+			}
 		},
 		function error(data)
 		{
@@ -158,27 +184,27 @@
 		$scope.item.Item2AgeGroup =[];
 		$scope.item.Item2Subject =[];
 
-			// add many-to-many age groups
-			for (var i = 0; i < $scope.selectedAgeGroups.length; i++)
-			{
-				if($scope.selectedAgeGroups[i] !== null)
+		// add many-to-many age groups
+		for (var i = 0; i < $scope.selectedAgeGroups.length; i++)
+		{
+			if($scope.selectedAgeGroups[i] !== null)
 			{
 				$scope.item.Item2AgeGroup.push(
 					{
 						"AgeGroupId": $scope.selectedAgeGroups[i].ID
-			});
+					});
 			}
 		}
 
-			// add many-to-many subjects
-			for (var i = 0; i < $scope.selectedSubjects.length; i++)
-			{
-				if ($scope.selectedSubjects[i] !== null)
+		// add many-to-many subjects
+		for (var i = 0; i < $scope.selectedSubjects.length; i++)
+		{
+			if ($scope.selectedSubjects[i] !== null)
 			{
 				$scope.item.Item2Subject.push(
 					{
 						"SubjectId": $scope.selectedSubjects[i].ID
-			});
+					});
 			}
 		}
 
@@ -187,7 +213,7 @@
 		{
 			// save the file
 			document.forms["fileSubmitForm"].submit();
-},
+		},
 		function error(data)
 		{
 			$scope.hasError = true;

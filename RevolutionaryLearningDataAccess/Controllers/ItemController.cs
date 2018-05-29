@@ -175,74 +175,97 @@ namespace RevolutionaryLearningDataAccess.Controllers
 		public ResultDTO SaveItem(ItemDTO item)
 		{
 			ResultDTO result = new ResultDTO();
+			Item itemToProcess = null;
 
-			using (var context = new DataAccessContext())
+			try
 			{
-				var authResult = item.Authenticate(context);
-
-				if(!authResult.StatusCodeSuccess)
+				using (var context = new DataAccessContext())
 				{
-					return authResult;
-				}
+					var authResult = item.Authenticate(context);
 
-				if (item.ID > 0)
-				{
-					Item curItem = (from n in context.Items
-									where n.ID == item.ID
-									select n).First();
-
-					curItem.Barcode = item.Barcode;
-					curItem.CategoryId = item.CategoryId;
-					curItem.Description = item.Description;
-					curItem.ImageName = item.ImageName;
-					curItem.LocationId = item.LocationId;
-					curItem.Name = item.Name;
-					curItem.SubCategoryId = item.SubCategoryId;
-					curItem.SubLocationId = item.SubLocationId;
-
-					result.StatusMessage = "Found 1 item to edit";
-				}
-				else
-				{
-					Item newItem = new Item
+					if (!authResult.StatusCodeSuccess)
 					{
-						Barcode = item.Barcode,
-						CategoryId = item.CategoryId,
-						Description = item.Description,
-						ImageName = item.ImageName,
-						LocationId = item.LocationId,
-						Name = item.Name,
-						SubCategoryId = item.SubCategoryId,
-						SubLocationId = item.SubLocationId
-					};
+						return authResult;
+					}
 
-					context.Items.Add(newItem);
+					if (item.ID > 0)
+					{
+						itemToProcess = (from n in context.Items
+										where n.ID == item.ID
+										select n).First();
 
-					result.StatusMessage = "Inserted 1 item";
+						itemToProcess.Barcode = item.Barcode;
+						itemToProcess.CategoryId = item.CategoryId;
+						itemToProcess.Description = item.Description;
+						itemToProcess.ImageName = item.ImageName;
+						itemToProcess.LocationId = item.LocationId;
+						itemToProcess.Name = item.Name;
+						itemToProcess.SubCategoryId = item.SubCategoryId;
+						itemToProcess.SubLocationId = item.SubLocationId;
 
-					context.SaveChanges();
+						result.StatusMessage = "Found 1 item to edit";
+
+						// remove existing many to many values
+						var ageGroups = (from n in context.Item2AgeGroup
+										 where n.ItemId == itemToProcess.ID
+										 select n).ToList();
+
+						ageGroups.ForEach(n => context.Item2AgeGroup.Remove(n));
+
+						var subjects = (from n in context.Item2Subject
+										where n.ItemId == itemToProcess.ID
+										select n).ToList();
+
+						subjects.ForEach(n => context.Item2Subject.Remove(n));
+					}
+					else
+					{
+						itemToProcess = new Item
+						{
+							Barcode = item.Barcode,
+							CategoryId = item.CategoryId,
+							Description = item.Description,
+							ImageName = item.ImageName,
+							LocationId = item.LocationId,
+							Name = item.Name,
+							SubCategoryId = item.SubCategoryId,
+							SubLocationId = item.SubLocationId
+						};
+
+						context.Items.Add(itemToProcess);
+
+						result.StatusMessage = "Inserted 1 item";
+
+						context.SaveChanges();
+					}
 
 					// add many to many values
 					foreach (var ageGroup in item.Item2AgeGroup)
 					{
-						newItem.Item2AgeGroup.Add(new Item2AgeGroup
+						itemToProcess.Item2AgeGroup.Add(new Item2AgeGroup
 						{
 							AgeGroupId = ageGroup.AgeGroupId,
-							ItemId = newItem.ID
+							ItemId = itemToProcess.ID
 						});
 					}
 
 					foreach (var subject in item.Item2Subject)
 					{
-						newItem.Item2Subject.Add(new Item2Subject
+						itemToProcess.Item2Subject.Add(new Item2Subject
 						{
 							SubjectId = subject.SubjectId,
-							ItemId = newItem.ID
+							ItemId = itemToProcess.ID
 						});
 					}
-				}
 
-				context.SaveChanges();
+					context.SaveChanges();
+				}
+			}
+			catch(Exception ex)
+			{
+				result.StatusCode = (int)HttpStatusCode.InternalServerError;
+				result.StatusCodeSuccess = false;
+				result.StatusMessage = ex.ToString();
 			}
 
 			return result;
